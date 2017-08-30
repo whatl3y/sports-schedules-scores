@@ -11,7 +11,12 @@ export default function Teams(postgres) {
         'location', 'name', 'full_name', 'abbreviation',
         'team_color', 'logo_url', 'stats_url', 'schedule_url', 'scores_url',
         'conference_abbreviation', 'conference_name'
-      ]
+      ],
+
+      async getAll() {
+        const { rows } = await postgres.query(`select * from teams`)
+        return rows
+      }
     }
   )
 }

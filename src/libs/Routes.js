@@ -6,6 +6,8 @@ import async_map from 'async/map'
 const NOOP = () => {}
 
 export default {
+  _path: 'routes',
+
   get(callback=NOOP) {
     return new Promise((resolve, reject) => {
       async_waterfall([

@@ -1,0 +1,21 @@
+- data = data || {}
+
+html
+  head
+    meta(charset="utf-8")
+    meta(http-equiv="X-UA-Compatible",content="IE=edge")
+    meta(name="viewport",content="width=device-width")
+    
+    link(rel="icon",href="/public/images/favicon.jpg")
+    
+    script(src="https://use.fontawesome.com/028467eb54.js")
+    script(type='text/javascript').
+      LOCAL_DATA=!{JSON.stringify(data||{})}
+    
+    title CFB Results and Schedules
+    link(href="/public/css/app.2baf9e43a8be71d14d7f738963b768a5.css" rel="stylesheet")
+  body
+    div#app
+    script(type="text/javascript" src="/public/js/manifest.0917a32b0a7a335107c6.js")
+    script(type="text/javascript" src="/public/js/vendor.8259c24709d64ef90962.js")
+    script(type="text/javascript" src="/public/js/app.1129d2040619377a618c.js")

@@ -2,7 +2,7 @@
  * to listen for HTTP requests
  */
 
-import newrelic from 'newrelic'
+// import newrelic from 'newrelic'
 import http from 'http'
 import https from 'https'
 import os from 'os'
