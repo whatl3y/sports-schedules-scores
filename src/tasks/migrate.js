@@ -55,6 +55,7 @@ async function createEvents(postgres) {
   await postgres.query(`
     CREATE TABLE IF NOT EXISTS events (
       id serial PRIMARY KEY,
+      espn_event_id integer,
       home_team_id integer REFERENCES teams,
       visiting_team_id integer REFERENCES teams,
       home_team_score integer,

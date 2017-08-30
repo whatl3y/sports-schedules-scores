@@ -22,6 +22,10 @@ export default {
     connection_string: process.env.DATABASE_URL || 'postgres://localhost:5432/cfb'
   },
 
+  cfbapi: {
+    host: process.env.CFB_HOST || 'https://cfb-scoreboard-api.herokuapp.com'
+  },
+
   logger: {
     options: {
       name: appName,
