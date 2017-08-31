@@ -14,16 +14,16 @@
                   div {{ team.location }}
                   div {{ team.name }}
               img.img-fluid(:src="team.logo_url")
-              div.schedule.d-flex.align-items-center
+              div.schedule.d-flex
                 ul.list-unstyled
-                  li(v-for="event in teamSpecificEvents(team.full_name)")
-                    div.d-flex.flex-column.align-items-center
+                  li(:style="getResultOrStyle(event, team, 'style')",v-for="event in teamSpecificEvents(team.full_name)")
+                    div.d-flex.flex-row.justify-content-center
                       div
-                        strong {{ getFormattedDate(event.event_timestamp) }}
+                        i {{ getFormattedDate(event.event_timestamp) }} -&nbsp;
                       div.d-flex.flex-row.justify-content-center
                         div {{ getAtOrVs(event, team) }}&nbsp;
                         div {{ getOtherTeam(event, team) }}&nbsp;
-                        div(v-if="getResultOrStyle(event, team)",:style="getResultOrStyle(event, team, 'style')")
+                        div(v-if="getResultOrStyle(event, team)")
                           strong ({{ getResultOrStyle(event, team) }})
 </template>
 
@@ -54,9 +54,9 @@
       getTimeFromNow:   TimeHelpers.getTimeFromNow,
       relativeDate:     TimeHelpers.getTimeDifferenceFromUnits,
 
-      getFormattedDate(datetime, format='MMMM Do, YYYY h:mm a') {
+      getFormattedDate(datetime, format='MM/DD/YYYY h:mm a') {
         if (parseInt(moment.utc(datetime).format('H')) >= 0 && parseInt(moment.utc(datetime).format('H')) <= 9)
-          format = 'MMMM Do, YYYY'
+          format = 'MM/DD/YYYY'
         return TimeHelpers.getFormattedDate(datetime, format)
       },
 
@@ -71,17 +71,21 @@
       getOtherTeam(event, team) {
         const homeTeam = event.home_full_name
         const homeLoc = event.home_location
+        const homeAbbr = event.home_abbreviation
         const visitingTeam = event.visiting_full_name
         const visitingLoc = event.visiting_location
+        const visitingAbbr = event.visiting_abbreviation
         if (homeTeam == team.full_name)
-          return visitingLoc
-        return homeLoc
+          return visitingAbbr
+        return homeAbbr
       },
 
       getResultOrStyle(event, heroTeam, type="result") {
         const isInPast = moment.utc(event.event_timestamp).isBefore(moment())
-        if (!isInPast)
-          return null
+        if (!isInPast) {
+          if (type == 'result')
+            return '0-0'
+        }
 
         const isGameFinal = event.current_period === 'F'
 
@@ -102,7 +106,7 @@
         switch (type) {
           case 'style':
             if (isGameFinal)
-              return { color: (heroTeamScore > villainTeamScore) ? 'green' : 'red' }
+              return { fontWeight: 'bold', color: (heroTeamScore > villainTeamScore) ? 'green' : 'red' }
             return {}
 
           default:
@@ -139,7 +143,7 @@
 
 <style scoped>
   .event {
-    padding: 3px;
+    padding: 2px 2px 0px 2px;
   }
 
   .team {
@@ -147,12 +151,16 @@
   }
 
   .schedule {
-    min-height: 100px;
+    min-height: 120px;
+  }
+
+  .schedule ul {
+    margin-bottom: 2px;
   }
 
   .schedule li {
     border-bottom: 1px solid #f0f0f0;
-    font-size: 7px;
+    font-size: 8px;
   }
 
   img {
