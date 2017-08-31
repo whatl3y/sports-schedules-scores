@@ -3,17 +3,32 @@
     h1.text-center CFB Schedules and Scores
     div.row
       div.col-12.col-md-6.offset-md-3.col-lg-4.offset-lg-4
-        b-form-input(v-model="filter",placeholder="Enter a team name...")
+        b-form-input(v-model="filter",placeholder="Find a team...")
     div.d-flex.flex-row.justify-content-center.flex-wrap
-      div.event(v-for="team in filteredTeams")
-        b-card
-          div.card-text
+      div.event(:style="getTeamColorStyle(team)",v-for="team in filteredTeams")
+        b-card(no-body)
+          div.card-text.team
             div.d-flex.flex-column.align-items-center.justify-content-center
+              div.text-center(style="font-size:9px;")
+                strong
+                  div {{ team.location }}
+                  div {{ team.name }}
               img.img-fluid(:src="team.logo_url")
-              div(style="font-size:8px;") {{ team.full_name }}
+              div.schedule.d-flex.align-items-center
+                ul.list-unstyled
+                  li(v-for="event in teamSpecificEvents(team.full_name)")
+                    div.d-flex.flex-column.align-items-center
+                      div
+                        strong {{ getFormattedDate(event.event_timestamp) }}
+                      div.d-flex.flex-row.justify-content-center
+                        div {{ getAtOrVs(event, team) }}&nbsp;
+                        div {{ getOtherTeam(event, team) }}&nbsp;
+                        div(v-if="getResultOrStyle(event, team)",:style="getResultOrStyle(event, team, 'style')")
+                          strong ({{ getResultOrStyle(event, team) }})
 </template>
 
 <script>
+  import moment from 'moment'
   import TimeHelpers from '../factories/TimeHelpers'
   import Snackbar from '../factories/Snackbar'
   import CfbData from '../factories/CfbData'
@@ -36,9 +51,72 @@
     },
 
     methods: {
-      getFormattedDate: TimeHelpers.getFormattedDate,
       getTimeFromNow:   TimeHelpers.getTimeFromNow,
       relativeDate:     TimeHelpers.getTimeDifferenceFromUnits,
+
+      getFormattedDate(datetime, format='MMMM Do, YYYY h:mm a') {
+        if (parseInt(moment.utc(datetime).format('H')) >= 0 && parseInt(moment.utc(datetime).format('H')) <= 9)
+          format = 'MMMM Do, YYYY'
+        return TimeHelpers.getFormattedDate(datetime, format)
+      },
+
+      getAtOrVs(event, team) {
+        const homeTeam = event.home_full_name
+        const visitingTeam = event.visiting_full_name
+        if (homeTeam == team.full_name)
+          return '@'
+        return 'vs'
+      },
+
+      getOtherTeam(event, team) {
+        const homeTeam = event.home_full_name
+        const homeLoc = event.home_location
+        const visitingTeam = event.visiting_full_name
+        const visitingLoc = event.visiting_location
+        if (homeTeam == team.full_name)
+          return visitingLoc
+        return homeLoc
+      },
+
+      getResultOrStyle(event, heroTeam, type="result") {
+        const isInPast = moment.utc(event.event_timestamp).isBefore(moment())
+        if (!isInPast)
+          return null
+
+        const isGameFinal = event.current_period === 'F'
+
+        const homeTeam = event.home_full_name
+        const homeTeamScore = event.home_team_score
+        const visitingTeam = event.visiting_full_name
+        const visitingTeamScore = event.visiting_team_score
+
+        let heroTeamScore, villainTeamScore
+        if (homeTeam == heroTeam.full_name) {
+          heroTeamScore = homeTeamScore
+          villainTeamScore = visitingTeamScore
+        } else {
+          heroTeamScore = visitingTeamScore
+          villainTeamScore = homeTeamScore
+        }
+
+        switch (type) {
+          case 'style':
+            if (isGameFinal)
+              return { color: (heroTeamScore > villainTeamScore) ? 'green' : 'red' }
+            return {}
+
+          default:
+            if (isGameFinal) {
+              const wOrL = (heroTeamScore > villainTeamScore) ? 'W' : 'L'
+              return `${wOrL} ${heroTeamScore}-${villainTeamScore}`
+            }
+            return `${heroTeamScore}-${villainTeamScore}`
+        }
+      },
+
+      getTeamColorStyle(team) {
+        return { color: `#${team.team_color}` }
+      },
 
       teamSpecificEvents(teamFullName) {
         return this.events.filter(ev => {
@@ -61,10 +139,23 @@
 
 <style scoped>
   .event {
-    padding: 5px;
+    padding: 3px;
+  }
+
+  .team {
+    padding: 3px;
+  }
+
+  .schedule {
+    min-height: 100px;
+  }
+
+  .schedule li {
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 7px;
   }
 
   img {
-    max-height: 50px;
+    max-height: 30px;
   }
 </style>

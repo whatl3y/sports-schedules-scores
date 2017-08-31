@@ -17,10 +17,12 @@ export default function Events(postgres) {
         const { rows } = await postgres.query(`
           select
             th.full_name as home_full_name,
+            th.location as home_location,
             th.team_color as home_team_color,
             th.logo_url as home_logo_url,
             th.conference_abbreviation as home_conference_abbreviation,
             tv.full_name as visiting_full_name,
+            tv.location as visiting_location,
             tv.team_color as visiting_team_color,
             tv.logo_url as visiting_logo_url,
             tv.conference_abbreviation as visiting_conference_abbreviation,
