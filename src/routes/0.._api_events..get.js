@@ -13,12 +13,13 @@ const teams = Teams(postgres)
 export default async function ApiEvents(req, res) {
   try {
     const latestDate = null// moment().add(30, 'days').format('YYYY-MM-DD')
-    const [ allEvents, allTeams ] = await Promise.all([
+    const [ allEvents, allTeams, allConferences ] = await Promise.all([
       events.getAll(latestDate),
-      teams.getAll()
+      teams.getAll(),
+      teams.getAllConferences()
     ])
 
-    res.json({events: allEvents, teams: allTeams})
+    res.json({events: allEvents, teams: allTeams, conferences: allConferences.map(c => c.conference_abbreviation) })
 
   } catch(err) {
     log.error(err)

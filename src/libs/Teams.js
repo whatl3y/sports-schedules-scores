@@ -14,7 +14,20 @@ export default function Teams(postgres) {
       ],
 
       async getAll() {
-        const { rows } = await postgres.query(`select * from teams`)
+        const { rows } = await postgres.query(`
+          select e.event_timestamp as event_time_today, t.*
+          from teams as t
+          left outer join events as e on (e.home_team_id = t.id or e.visiting_team_id = t.id) and e.event_timestamp::date = now()::date
+          `)
+        return rows
+      },
+
+      async getAllConferences() {
+        const { rows } = await postgres.query(`
+          select distinct conference_abbreviation
+          from teams
+          order by conference_abbreviation
+          `)
         return rows
       }
     }

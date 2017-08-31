@@ -1,12 +1,17 @@
 <template lang="pug">
   div.container-fluid
-    h1.text-center CFB Schedules and Scores
+    h1 NCAAF Schedules and Scores
     div.row
-      div.col-12.col-md-6.offset-md-3.col-lg-4.offset-lg-4
-        b-form-input(v-model="filter",placeholder="Find a team...")
+      div.col-12.col-md-8.offset-md-2.col-lg-6.offset-lg-3
+        div.row
+          div.col.col-xs-12
+            b-form-select(v-model="selectFilter",:options="selectFilterOptions")
+          div.col.col-xs-12
+            b-form-input(v-model="searchFilter",placeholder="Search for a team...")
+    hr(style="margin:20px 0px;")
     div.d-flex.flex-row.justify-content-center.flex-wrap
       div.event(:style="getTeamColorStyle(team)",v-for="team in filteredTeams")
-        b-card(no-body)
+        b-card(no-body,:style="{ borderColor: getTeamColorStyle(team, true) }")
           div.card-text.team
             div.d-flex.flex-column.align-items-center.justify-content-center
               div.text-center(style="font-size:9px;")
@@ -36,7 +41,9 @@
   export default {
     data() {
       return {
-        filter: null,
+        selectFilterOptions: [],
+        selectFilter: 'today',
+        searchFilter: null,
         teams: [],
         events: []
       }
@@ -44,9 +51,18 @@
 
     computed: {
       filteredTeams() {
-        if (this.filter)
-          return this.teams.filter(t => t.full_name.toLowerCase().indexOf(this.filter.toLowerCase()) > -1)
-        return this.teams
+        let filteredTeams = this.teams.slice(0)
+        if (this.selectFilter != 'all') {
+          if (this.selectFilter == 'today') {
+            filteredTeams = filteredTeams.filter(t => !!t.event_time_today)
+          } else {
+            filteredTeams = filteredTeams.filter(t => this.selectFilter == t.conference_abbreviation)
+          }
+        }
+
+        if (this.searchFilter)
+          return filteredTeams.filter(t => t.full_name.toLowerCase().indexOf(this.searchFilter.toLowerCase()) > -1)
+        return filteredTeams
       }
     },
 
@@ -118,7 +134,9 @@
         }
       },
 
-      getTeamColorStyle(team) {
+      getTeamColorStyle(team, justColor=false) {
+        if (justColor)
+          return `#${team.team_color}`
         return { color: `#${team.team_color}` }
       },
 
@@ -137,6 +155,14 @@
           return -1
         return 1
       })
+      this.conferences = info.conferences
+
+      this.selectFilterOptions = [
+        { text: `All Games`, value: 'all' },
+        { text: `All of Today's Games`, value: 'today' }
+      ].concat(
+        this.conferences.map(c => ({ text: `Conf: ${c}`, value: c }))
+      )
     }
   }
 </script>
@@ -159,7 +185,7 @@
   }
 
   .schedule li {
-    border-bottom: 1px solid #f0f0f0;
+    /*border-bottom: 1px solid #f0f0f0;*/
     font-size: 8px;
   }
 
