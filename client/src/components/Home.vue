@@ -158,10 +158,10 @@
       this.conferences = info.conferences
 
       this.selectFilterOptions = [
-        { text: `All Games`, value: 'all' },
-        { text: `All of Today's Games`, value: 'today' }
+        { text: `All Teams`, value: 'all' },
+        { text: `All Teams with Games Today`, value: 'today' }
       ].concat(
-        this.conferences.map(c => ({ text: `Conf: ${c}`, value: c }))
+        this.conferences.map(c => ({ text: `${c} (conference)`, value: c }))
       )
     }
   }
