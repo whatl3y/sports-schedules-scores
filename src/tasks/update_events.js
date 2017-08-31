@@ -3,6 +3,7 @@ import moment from 'moment'
 import Promise from 'bluebird'
 import bunyan from 'bunyan'
 import PostgresClient from '../libs/PostgresClient'
+import Aws from '../libs/Aws'
 import CfbApi from '../libs/CfbApi'
 import Events from '../libs/Events'
 import Teams from '../libs/Teams'
@@ -14,6 +15,7 @@ const log = bunyan.createLogger(config.logger.options)
 const postgres = new PostgresClient()
 const events = Events(postgres)
 const teams = Teams(postgres)
+const aws = Aws().S3
 const api = CfbApi()
 
 ;(async () => {
@@ -44,6 +46,11 @@ const api = CfbApi()
             log.debug("Away Team", awayTeam)
             const homeExists = await teams.findByColumn(homeTeam.location, 'location')
             if (!homeExists) {
+              const bufferHome = await api.getImageBuffer(homeTeam.logoUrl)
+              let imageNameHome = homeTeam.logoUrl.split('/')
+              imageNameHome = `ncaaf/${imageNameHome[imageNameHome.length - 1]}`
+              await aws.writeFile({data: bufferHome, exact_filename: true, filename: imageNameHome})
+
               teams.setRecord({
                 location:                 homeTeam.location,
                 name:                     homeTeam.name,
@@ -51,6 +58,7 @@ const api = CfbApi()
                 abbreviation:             homeTeam.abbreviation,
                 team_color:               homeTeam.color,
                 logo_url:                 homeTeam.logoUrl,
+                logo_local_filename:      imageNameHome,
                 stats_url:                homeTeam.links.stats,
                 schedule_url:             homeTeam.links.schedule,
                 scores_url:               homeTeam.links.scores,
@@ -66,6 +74,11 @@ const api = CfbApi()
 
             const awayExists = await teams.findByColumn(awayTeam.location, 'location')
             if (!awayExists) {
+              const bufferAway = await api.getImageBuffer(awayTeam.logoUrl)
+              let imageNameAway = awayTeam.logoUrl.split('/')
+              imageNameAway = `ncaaf/${imageNameAway[imageNameAway.length - 1]}`
+              await aws.writeFile({data: bufferAway, exact_filename: true, filename: imageNameAway})
+
               teams.setRecord({
                 location:                 awayTeam.location,
                 name:                     awayTeam.name,
@@ -73,6 +86,7 @@ const api = CfbApi()
                 abbreviation:             awayTeam.abbreviation,
                 team_color:               awayTeam.color,
                 logo_url:                 awayTeam.logoUrl,
+                logo_local_filename:      imageNameAway,
                 stats_url:                awayTeam.links.stats,
                 schedule_url:             awayTeam.links.schedule,
                 scores_url:               awayTeam.links.scores,

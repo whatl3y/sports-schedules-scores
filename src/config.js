@@ -22,6 +22,15 @@ export default {
     connection_string: process.env.DATABASE_URL || 'postgres://localhost:5432/cfb'
   },
 
+  aws: {
+    access_key:         process.env.AWS_ACCESS_KEY_ID,
+    access_secret:      process.env.AWS_SECRET_ACCESS_KEY,
+
+    s3: {
+      bucket: process.env.AWS_S3_BUCKET || 'whatl3y'
+    }
+  },
+
   cfbapi: {
     host: process.env.CFB_HOST || 'https://cfb-scoreboard-api.herokuapp.com'
   },

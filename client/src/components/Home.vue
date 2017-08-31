@@ -18,7 +18,7 @@
                 strong
                   div {{ team.location }}
                   div {{ team.name }}
-              img.img-fluid(:src="team.logo_url")
+              img.img-fluid(:src="'file/s3/' + team.logo_local_filename")
               div.schedule.d-flex
                 ul.list-unstyled
                   li(:style="getResultOrStyle(event, team, 'style')",v-for="event in teamSpecificEvents(team.full_name)")

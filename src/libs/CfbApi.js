@@ -16,6 +16,17 @@ export default function CfbApi(host=config.cfbapi.host) {
           resolve(JSON.parse(body))
         })
       })
+    },
+
+    getImageBuffer(imageUrl) {
+      return new Promise((resolve, reject) => {
+        request.get(imageUrl, { encoding: null }, (err, httpResponse, body) => {
+          if (err) return reject(err)
+          if (httpResponse.statusCode >= 400) return reject(body)
+
+          resolve(body)
+        })
+      })
     }
   }
 }

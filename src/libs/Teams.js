@@ -9,8 +9,8 @@ export default function Teams(postgres) {
     {
       accessibleColumns: [
         'location', 'name', 'full_name', 'abbreviation',
-        'team_color', 'logo_url', 'stats_url', 'schedule_url', 'scores_url',
-        'conference_abbreviation', 'conference_name'
+        'team_color', 'logo_url', 'logo_local_filename', 'stats_url',
+        'schedule_url', 'scores_url', 'conference_abbreviation', 'conference_name'
       ],
 
       async getAll() {

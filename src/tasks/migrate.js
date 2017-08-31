@@ -35,6 +35,7 @@ async function createTeams(postgres) {
       abbreviation varchar(255),
       team_color varchar(255),
       logo_url varchar(255),
+      logo_local_filename varchar(255),
       stats_url varchar(255),
       schedule_url varchar(255),
       scores_url varchar(255),
