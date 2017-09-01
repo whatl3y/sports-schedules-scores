@@ -4,13 +4,13 @@
     div.row
       div.col-12.col-md-8.offset-md-2.col-lg-6.offset-lg-3
         div.row
-          div.col.col-xs-12
+          div.col-sm-12.col-md-6.margin-bottom-small
             b-form-select(v-model="selectFilter",:options="selectFilterOptions")
-          div.col.col-xs-12
+          div.col-sm-12.col-md-6
             b-form-input(v-model="searchFilter",placeholder="Search for a team...")
     hr(style="margin:20px 0px;")
     div.d-flex.flex-row.justify-content-center.flex-wrap
-      div.event(:style="getTeamColorStyle(team)",v-for="team in filteredTeams")
+      div.event(:style="getTeamColorStyle(team)",v-for="(team, index) in filteredTeams",:id="'event' + index")
         b-card(no-body,:style="{ borderColor: getTeamColorStyle(team, true) }")
           div.card-text.team
             div.d-flex.flex-column.align-items-center.justify-content-center
@@ -80,8 +80,8 @@
         const homeTeam = event.home_full_name
         const visitingTeam = event.visiting_full_name
         if (homeTeam == team.full_name)
-          return '@'
-        return 'vs'
+          return 'vs'
+        return '@'
       },
 
       getOtherTeam(event, team) {

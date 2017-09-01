@@ -21,7 +21,18 @@ const api = CfbApi()
 ;(async () => {
   try {
     const startDate = moment(argv.s || argv.start)
-    const endDate = moment(argv.e || argv.end)
+    const timeSpan = argv.t || argv.span
+    let endDate = moment(argv.e || argv.end)
+
+    switch (timeSpan) {
+      case 'month':
+        endDate = startDate.add(1, 'month')
+        break
+      case 'week':
+        endDate = startDate.add(1, 'week')
+        break
+    }
+
     if (!(startDate.isValid() && endDate.isValid()))
       return log.error("Make sure any dates you enter are in the form of YYYY-MM-DD.")
 
