@@ -17,7 +17,7 @@ export default function Teams(postgres) {
         const { rows } = await postgres.query(`
           select e.event_timestamp as event_time_today, t.*
           from teams as t
-          left outer join events as e on (e.home_team_id = t.id or e.visiting_team_id = t.id) and e.event_timestamp::date = now()::date
+          left outer join events as e on (e.home_team_id = t.id or e.visiting_team_id = t.id) and (e.event_timestamp::timestamp without time zone AT TIME ZONE 'UTC-8')::date = (now()::timestamp without time zone AT TIME ZONE 'UTC-8')::date
           `)
         return rows
       },
