@@ -36,10 +36,15 @@ const api = CfbApi()
     if (!(startDate.isValid() && endDate.isValid()))
       return log.error("Make sure any dates you enter are in the form of YYYY-MM-DD.")
 
-    for (let currentDate = startDate; currentDate.diff(endDate, 'days') <= 0; currentDate.add(1, 'days')) {
+    // for (let currentDate = startDate; currentDate.diff(endDate, 'days') <= 0; currentDate.add(1, 'days')) {
+    const daysIterable = new Array(endDate.diff(startDate, 'days')).fill(0).map((zero, i) => i).reverse()
+    await Promise.each(daysIterable, async daysToSubtract => {
+      log.info(`On day ${daysIterable.length - daysToSubtract}`)
+      const currentDate = moment().subtract(daysToSubtract, 'days')
+
       const apiResponse = await api.getEventsByDate(currentDate)
       if (!apiResponse.games)
-        continue
+        return
 
       await Promise.each(apiResponse.games, async game => {
           try {
@@ -130,7 +135,7 @@ const api = CfbApi()
           }
         }
       )
-    }
+    })
 
     log.info("Successfully updated events!")
     process.exit()
