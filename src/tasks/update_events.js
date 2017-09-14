@@ -26,10 +26,10 @@ const api = CfbApi()
 
     switch (timeSpan) {
       case 'month':
-        endDate = startDate.add(1, 'month')
+        endDate = startDate.clone().add(1, 'month')
         break
       case 'week':
-        endDate = startDate.add(1, 'week')
+        endDate = startDate.clone().add(1, 'week')
         break
     }
 
@@ -39,7 +39,7 @@ const api = CfbApi()
     const daysIterable = new Array(endDate.diff(startDate, 'days')).fill(0).map((zero, i) => i).reverse()
     await Promise.each(daysIterable, async daysToSubtract => {
       log.info(`On day ${daysIterable.length - daysToSubtract}`)
-      
+
       const currentDate = moment().subtract(daysToSubtract, 'days')
       const apiResponse = await api.getEventsByDate(currentDate)
       if (!apiResponse.games)
