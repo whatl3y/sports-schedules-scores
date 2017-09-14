@@ -27,6 +27,35 @@ export default function Aws(options={}) {
         })
       },
 
+      getFileStreamWithBackoff(streamToPipeTo, options, backoffAttempt=1) {
+        const totalAllowedBackoffTries = 5
+        const backoffSecondsToWait = 2 + Math.pow(backoffAttempt, 2)
+        const sleep = () => new Promise(resolve => setTimeout(resolve, backoffSecondsToWait * 1000))
+
+        return new Promise((resolve, reject) => {
+          const filename = options.filename
+          const bucket = options.bucket || this.defaultbucket
+          const extraOptions = options.options || {}
+          const params = Object.assign({Bucket: bucket, Key: filename}, extraOptions)
+
+          s3.getObject(params).createReadStream()
+          .on('error', async (err, response) => {
+            if (backoffAttempt > totalAllowedBackoffTries)
+              return reject(err)
+
+            try {
+              await sleep()
+              await this.getFileStreamWithBackoff(streamToPipeTo, options, backoffAttempt + 1)
+              resolve()
+            } catch(e) {
+              reject(e)
+            }
+          })
+          .on('end', resolve)
+          .pipe(res)
+        })
+      },
+
       getFileUrl(options) {
         return new Promise((resolve, reject) => {
           const filename = options.filename
