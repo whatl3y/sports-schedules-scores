@@ -103,7 +103,10 @@
             return '0-0'
         }
 
-        const isGameFinal = event.current_period === 'F'
+        const isGameFinal     = event.event_status === 'STATUS_FINAL'
+        const isGamePostponed = event.event_status === 'STATUS_POSTPONED'
+        const isGameCancelled = event.event_status === 'STATUS_CANCELLED'
+        const isPlaying       = event.event_status === 'STATUS_IN_PROGRESS'
 
         const homeTeam = event.home_full_name
         const homeTeamScore = event.home_team_score
@@ -121,8 +124,9 @@
 
         switch (type) {
           case 'style':
-            if (isGameFinal)
-              return { fontWeight: 'bold', color: (heroTeamScore > villainTeamScore) ? 'green' : 'red' }
+            if (isGameFinal) return { fontWeight: 'bold', color: (heroTeamScore > villainTeamScore) ? 'green' : 'red' }
+            if (isPlaying) return { fontWeight: 'bold', color: 'orange' }
+            if (isGamePostponed || isGameCancelled) return { textDecoration: 'italic', color: 'gray' }
             return {}
 
           default:
