@@ -38,7 +38,7 @@ export default function Aws(options={}) {
           const extraOptions = options.options || {}
           const params = Object.assign({Bucket: bucket, Key: filename}, extraOptions)
 
-          s3.getObject(params).createReadStream()
+          this._s3.getObject(params).createReadStream()
           .on('error', async (err, response) => {
             if (backoffAttempt > totalAllowedBackoffTries)
               return reject(err)
@@ -52,7 +52,7 @@ export default function Aws(options={}) {
             }
           })
           .on('end', resolve)
-          .pipe(res)
+          .pipe(streamToPipeTo)
         })
       },
 
