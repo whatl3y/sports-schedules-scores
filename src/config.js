@@ -35,6 +35,10 @@ export default {
     host: process.env.CFB_HOST || 'https://cfb-scoreboard-api.herokuapp.com'
   },
 
+  slack: {
+    webhookUrl: process.env.SLACK_WEBHOOK_URL
+  },
+
   logger: {
     options: {
       name: appName,
