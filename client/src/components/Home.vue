@@ -55,6 +55,10 @@
         if (this.selectFilter != 'all') {
           if (this.selectFilter == 'today') {
             filteredTeams = filteredTeams.filter(t => !!t.event_time_today)
+            if (filteredTeams.length === 0) {
+              this.selectFilter = 'all'
+              filteredTeams = this.teams.slice(0)
+            }
           } else {
             filteredTeams = filteredTeams.filter(t => this.selectFilter == t.conference_abbreviation)
           }
