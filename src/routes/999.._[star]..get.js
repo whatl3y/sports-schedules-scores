@@ -1,11 +1,13 @@
 import bunyan from 'bunyan'
-import GeoIp from './libs/GeoIp'
+import GeoIp from '../libs/GeoIp'
 import Slack from '../libs/Slack'
 import config from '../config'
 
 const log = bunyan.createLogger(config.logger.options)
 
 export default async function Index(req, res) {
+  res.render('index', {})
+
   try {
     let realClientIpAddress = (req.headers['x-forwarded-for'] || req.ip).split(',')
     realClientIpAddress = realClientIpAddress[realClientIpAddress.length - 1]
@@ -14,6 +16,4 @@ export default async function Index(req, res) {
   } catch(err) {
     log.error("Error sending slack message", err)
   }
-
-  res.render('index', {})
 }
