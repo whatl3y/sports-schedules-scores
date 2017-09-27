@@ -2,6 +2,8 @@
 
 Get all NCAAF Division 1 schedules and scores in a single place.
 
+https://ncaaf.herokuapp.com
+
 ### Thanks
 
 Big thanks to @akeaswaran for the following repo, which inspired this project
