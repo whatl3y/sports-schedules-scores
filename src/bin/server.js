@@ -17,30 +17,16 @@ import Routes from '../libs/Routes'
 import PostgresClient from '../libs/PostgresClient'
 import config from '../config'
 
-const app = express()
-const pgClient = new PostgresClient()
-const log = bunyan.createLogger(config.logger.options)
-
-const isHttpsFromHostname = config.server.HOST.indexOf('https://') > -1
-const isHttpsFromConfig = process.env.SECURE
-let serverTypeMap = {}
-if (isHttpsFromConfig) {
-  const privateKey = fs.readFileSync( 'certs/server.key' )
-  const certificate = fs.readFileSync( 'certs/server.crt' )
-  const creds = {key:privateKey, cert:certificate}
-  const httpsServer = https.Server(creds, app)
-  serverTypeMap['server'] = httpsServer
-} else {
-  const httpServer = http.Server(app)
-  serverTypeMap['server'] = httpServer
-}
-
+const app         = express()
+const httpServer  = http.Server(app)
+const pgClient    = new PostgresClient()
+const log         = bunyan.createLogger(config.logger.options)
 
 // entry point to enrichment apps
 // throng allows for multiple processes based on
 // concurrency configurations (i.e. num CPUs available.)
 throng({
-  workers:  config.server.CLUSTER_MAX_CPUS,
+  workers:  config.server.WEB_CONCURRENCY,
   lifetime: Infinity,
   grace:    8000,
   start:    startApp
@@ -75,7 +61,7 @@ async function startApp() {
       }
     })
 
-    serverTypeMap['server'].listen(config.server.PORT, () => log.info(`listening on *: ${config.server.PORT}`))
+    httpServer.listen(config.server.PORT, () => log.info(`listening on *: ${config.server.PORT}`))
 
   } catch(err) {
     log.error("Error starting server", err)
@@ -83,6 +69,6 @@ async function startApp() {
   }
 
   //handle if the process suddenly stops
-  process.on('SIGINT', () => {console.log('got SIGINT....'); process.exit()})
-  process.on('SIGTERM', () => {console.log('got SIGTERM....'); process.exit()})
+  process.on('SIGINT', () => { console.log('got SIGINT....'); process.exit() })
+  process.on('SIGTERM', () => { console.log('got SIGTERM....'); process.exit() })
 }

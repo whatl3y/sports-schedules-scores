@@ -13,6 +13,11 @@ export default function DatabaseModel(postgres, table) {
       return this.record = {}
     },
 
+    async getAll() {
+      const { rows } = await postgres.query(`select * from ${table}`)
+      return rows
+    },
+
     async findByColumn(value, column='name') {
       const { rows } = await postgres.query(`select * from ${table} where ${column} = $1`, [value])
       if (rows.length > 0)

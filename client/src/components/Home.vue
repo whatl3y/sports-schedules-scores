@@ -1,6 +1,6 @@
 <template lang="pug">
   div.container-fluid
-    h1 NCAAF Schedules and Scores
+    h1 {{ selectedLeagueName.toUpperCase() }} Schedules and Scores
     div.row
       div.col-12.col-md-8.offset-md-2.col-lg-6.offset-lg-3
         div.row
@@ -16,8 +16,7 @@
             div.d-flex.flex-column.align-items-center.justify-content-center
               div.text-center(style="font-size:9px;")
                 strong
-                  div {{ team.location }}
-                  div {{ team.name }}
+                  div {{ (team.current_ranking) ? '(' + team.current_ranking + ')' : '' }} {{ team.full_name }}
               img.img-fluid(:src="'file/s3/' + team.logo_local_filename")
               div.schedule.d-flex
                 ul.list-unstyled
@@ -36,14 +35,17 @@
   import moment from 'moment'
   import TimeHelpers from '../factories/TimeHelpers'
   import Snackbar from '../factories/Snackbar'
-  import CfbData from '../factories/CfbData'
+  import ApiData from '../factories/ApiData'
 
   export default {
+    props: [ 'league' ],
+
     data() {
       return {
         selectFilterOptions: [],
         selectFilter: 'today',
         searchFilter: null,
+        selectedLeagueName: this.league,
         teams: [],
         events: []
       }
@@ -107,10 +109,10 @@
             return '0-0'
         }
 
-        const isGameFinal     = event.event_status === 'STATUS_FINAL'
-        const isGamePostponed = event.event_status === 'STATUS_POSTPONED'
-        const isGameCancelled = event.event_status === 'STATUS_CANCELLED'
-        const isPlaying       = event.event_status === 'STATUS_IN_PROGRESS'
+        const isGameFinal     = event.event_status === 'final'
+        const isGamePostponed = event.event_status === 'postponed'
+        const isGameCancelled = event.event_status === 'cancelled'
+        const isPlaying       = event.event_status === 'progress'
 
         const homeTeam = event.home_full_name
         const homeTeamScore = event.home_team_score
@@ -144,8 +146,8 @@
 
       getTeamColorStyle(team, justColor=false) {
         if (justColor)
-          return `#${team.team_color}`
-        return { color: `#${team.team_color}` }
+          return `#${team.team_color1}`
+        return { color: `#${team.team_color1}` }
       },
 
       teamSpecificEvents(teamFullName) {
@@ -156,7 +158,9 @@
     },
 
     async created() {
-      const info = await CfbData.getAll()
+      this.selectedLeagueName = this.selectedLeagueName || 'ncaaf'
+
+      const info = await ApiData.getAll(this.selectedLeagueName)
       this.events = info.events
       this.teams = info.teams.sort((t1, t2) => {
         if (t1.location.toLowerCase() < t2.location.toLowerCase())
@@ -168,9 +172,9 @@
       this.selectFilterOptions = [
         { text: `All Teams`, value: 'all' },
         { text: `All Teams with Games Today`, value: 'today' }
-      ].concat(
-        this.conferences.map(c => ({ text: `${c} (conference)`, value: c }))
-      )
+      ]
+      .concat(this.conferences.map(c => ({ text: `${c} (conference)`, value: c })))
+      .filter(f => !!f)
     }
   }
 </script>

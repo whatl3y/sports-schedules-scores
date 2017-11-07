@@ -47,6 +47,7 @@
     "pg-query-stream": "^1.0.0",
     "pug": "^2.0.0-rc.3",
     "request": "^2.81.0",
+    "request-promise-native": "^1.0.5",
     "socket.io": "^1.7.3",
     "throng": "^4.0.0"
   },
