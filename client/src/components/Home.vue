@@ -1,34 +1,43 @@
 <template lang="pug">
-  div.container-fluid
-    h1 {{ selectedLeagueName.toUpperCase() }} Schedules and Scores
-    div.row
-      div.col-12.col-md-8.offset-md-2.col-lg-6.offset-lg-3
+  div
+    div(v-if="isLoading")
+      loader
+    div(v-if="!isLoading")
+      div.league-nav(v-if="leagues.length > 0")
+        span &nbsp;|&nbsp;
+        span(v-for="league in leagues")
+          a(:href="'/' + league.uri_name",:style="isLeagueActiveClass(league.uri_name)") {{ league.uri_name.toUpperCase() }}
+          span &nbsp;|&nbsp;
+      div.container-fluid
+        h1 {{ selectedLeagueName.toUpperCase() }} Schedules and Scores
         div.row
-          div.col-sm-12.col-md-6.margin-bottom-small
-            b-form-select(v-model="selectFilter",:options="selectFilterOptions")
-          div.col-sm-12.col-md-6
-            b-form-input(v-model="searchFilter",placeholder="Search for a team...")
-    hr(style="margin:20px 0px;")
-    div.d-flex.flex-row.justify-content-center.flex-wrap
-      div.event(:style="getTeamColorStyle(team)",v-for="(team, index) in filteredTeams",:id="'event' + index")
-        b-card(no-body,:style="{ borderColor: getTeamColorStyle(team, true) }")
-          div.card-text.team
-            div.d-flex.flex-column.align-items-center.justify-content-center
-              div.text-center(style="font-size:9px;")
-                strong
-                  div {{ (team.current_ranking) ? '(' + team.current_ranking + ')' : '' }} {{ team.full_name }}
-              img.img-fluid(:src="'file/s3/' + team.logo_local_filename")
-              div.schedule.d-flex
-                ul.list-unstyled
-                  li(:style="getResultOrStyle(event, team, 'style')",v-for="event in teamSpecificEvents(team.full_name)")
-                    div.d-flex.flex-row.justify-content-center
-                      div
-                        i {{ getFormattedDate(event.event_timestamp) }} -&nbsp;
-                      div.d-flex.flex-row.justify-content-center
-                        div {{ getAtOrVs(event, team) }}&nbsp;
-                        div {{ getOtherTeam(event, team) }}&nbsp;
-                        div(v-if="getResultOrStyle(event, team)")
-                          strong ({{ getResultOrStyle(event, team) }})
+          div.col-12.col-md-8.offset-md-2.col-lg-6.offset-lg-3
+            div.row
+              div.col-sm-12.col-md-6.margin-bottom-small
+                b-form-select(v-model="selectFilter",:options="selectFilterOptions")
+              div.col-sm-12.col-md-6
+                b-form-input(v-model="searchFilter",placeholder="Search for a team...")
+        hr(style="margin:20px 0px;")
+        div.d-flex.flex-row.justify-content-center.flex-wrap
+          div.event(:style="getTeamColorStyle(team)",v-for="(team, index) in filteredTeams",:id="'event' + index")
+            b-card(no-body,:style="{ borderColor: getTeamColorStyle(team, true) }")
+              div.card-text.team
+                div.d-flex.flex-column.align-items-center.justify-content-center
+                  div.text-center(style="font-size:9px;")
+                    strong
+                      div {{ (team.current_ranking) ? '(' + team.current_ranking + ')' : '' }} {{ team.full_name }}
+                  img.img-fluid(:src="'file/s3/' + team.logo_local_filename")
+                  div.schedule.d-flex
+                    ul.list-unstyled
+                      li(:style="getResultOrStyle(event, team, 'style')",v-for="event in teamSpecificEvents(team.full_name)")
+                        div.d-flex.flex-row.justify-content-center
+                          div
+                            i {{ getFormattedDate(event.event_timestamp) }} -&nbsp;
+                          div.d-flex.flex-row.justify-content-center
+                            div {{ getAtOrVs(event, team) }}&nbsp;
+                            div {{ getOtherTeam(event, team) }}&nbsp;
+                            div(v-if="getResultOrStyle(event, team)")
+                              strong ({{ getResultOrStyle(event, team) }})
 </template>
 
 <script>
@@ -42,10 +51,12 @@
 
     data() {
       return {
+        isLoading: true,
         selectFilterOptions: [],
         selectFilter: 'today',
         searchFilter: null,
         selectedLeagueName: this.league,
+        leagues: [],
         teams: [],
         events: []
       }
@@ -80,6 +91,10 @@
         if (parseInt(moment.utc(datetime).format('H')) >= 0 && parseInt(moment.utc(datetime).format('H')) <= 9)
           format = 'MM/DD/YYYY'
         return TimeHelpers.getFormattedDate(datetime, format)
+      },
+
+      isLeagueActiveClass(leagueName) {
+        return (leagueName.toLowerCase() == this.selectedLeagueName.toLowerCase()) ? { fontWeight: 'bold' } : {}
       },
 
       getAtOrVs(event, team) {
@@ -161,6 +176,7 @@
       this.selectedLeagueName = this.selectedLeagueName || 'ncaaf'
 
       const info = await ApiData.getAll(this.selectedLeagueName)
+      this.leagues = info.leagues.sort()
       this.events = info.events
       this.teams = info.teams.sort((t1, t2) => {
         if (t1.location.toLowerCase() < t2.location.toLowerCase())
@@ -175,6 +191,8 @@
       ]
       .concat(this.conferences.map(c => ({ text: `${c} (conference)`, value: c })))
       .filter(f => !!f)
+
+      this.isLoading = false
     }
   }
 </script>
