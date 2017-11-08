@@ -1,12 +1,6 @@
-# College Football Schedules and Scores
+# Sports Schedules and Scores
 
-Get all NCAAF Division 1 schedules and scores in a single place.
+Get all of your favorite sports and subsequent teams' schedules and
+past and current scores all in one place.
 
-https://ncaaf.herokuapp.com
-
-### Thanks
-
-Big thanks to @akeaswaran for the following repo, which inspired this project
-and is used to get the schedule/scoring data.
-
-https://github.com/akeaswaran/cfb-scoreboard-api
+https://sports.euphoritech.com

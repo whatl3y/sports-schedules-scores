@@ -53,7 +53,7 @@
       return {
         isLoading: true,
         selectFilterOptions: [],
-        selectFilter: 'today',
+        selectFilter: null,
         searchFilter: null,
         selectedLeagueName: this.league,
         leagues: [],
@@ -183,15 +183,16 @@
           return -1
         return 1
       })
-      this.conferences = info.conferences
+      this.conferences = info.conferences || []
 
       this.selectFilterOptions = [
         { text: `All Teams`, value: 'all' },
         { text: `All Teams with Games Today`, value: 'today' }
       ]
       .concat(this.conferences.map(c => ({ text: `${c} (conference)`, value: c })))
-      .filter(f => !!f)
+      .filter(c => !!c.value)
 
+      this.selectFilter = (this.conferences.length > 0) ? this.conferences[ Math.floor(Math.random() * this.conferences.length) ] : 'all'
       this.isLoading = false
     }
   }
