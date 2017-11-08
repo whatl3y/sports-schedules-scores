@@ -1,49 +1,62 @@
 <template lang="pug">
-  div.container-fluid
-    h1 NCAAF Schedules and Scores
-    div.row
-      div.col-12.col-md-8.offset-md-2.col-lg-6.offset-lg-3
+  div
+    div(v-if="isLoading")
+      loader
+    div(v-if="!isLoading")
+      div.league-nav(v-if="leagues.length > 0")
+        span &nbsp;|&nbsp;
+        span(v-for="league in leagues")
+          a(:href="'/' + league.uri_name",:style="isLeagueActiveClass(league.uri_name)") {{ league.uri_name.toUpperCase() }}
+          span &nbsp;|&nbsp;
+      div.container-fluid
+        h1 {{ selectedLeagueName.toUpperCase() }} Schedules and Scores
         div.row
-          div.col-sm-12.col-md-6.margin-bottom-small
-            b-form-select(v-model="selectFilter",:options="selectFilterOptions")
-          div.col-sm-12.col-md-6
-            b-form-input(v-model="searchFilter",placeholder="Search for a team...")
-    hr(style="margin:20px 0px;")
-    div.d-flex.flex-row.justify-content-center.flex-wrap
-      div.event(:style="getTeamColorStyle(team)",v-for="(team, index) in filteredTeams",:id="'event' + index")
-        b-card(no-body,:style="{ borderColor: getTeamColorStyle(team, true) }")
-          div.card-text.team
-            div.d-flex.flex-column.align-items-center.justify-content-center
-              div.text-center(style="font-size:9px;")
-                strong
-                  div {{ team.location }}
-                  div {{ team.name }}
-              img.img-fluid(:src="'file/s3/' + team.logo_local_filename")
-              div.schedule.d-flex
-                ul.list-unstyled
-                  li(:style="getResultOrStyle(event, team, 'style')",v-for="event in teamSpecificEvents(team.full_name)")
-                    div.d-flex.flex-row.justify-content-center
-                      div
-                        i {{ getFormattedDate(event.event_timestamp) }} -&nbsp;
-                      div.d-flex.flex-row.justify-content-center
-                        div {{ getAtOrVs(event, team) }}&nbsp;
-                        div {{ getOtherTeam(event, team) }}&nbsp;
-                        div(v-if="getResultOrStyle(event, team)")
-                          strong ({{ getResultOrStyle(event, team) }})
+          div.col-12.col-md-8.offset-md-2.col-lg-6.offset-lg-3
+            div.row
+              div.col-sm-12.col-md-6.margin-bottom-small
+                b-form-select(v-model="selectFilter",:options="selectFilterOptions")
+              div.col-sm-12.col-md-6
+                b-form-input(v-model="searchFilter",placeholder="Search for a team...")
+        hr(style="margin:20px 0px;")
+        div.d-flex.flex-row.justify-content-center.flex-wrap
+          div.event(:style="getTeamColorStyle(team)",v-for="(team, index) in filteredTeams",:id="'event' + index")
+            b-card(no-body,:style="{ borderColor: getTeamColorStyle(team, true) }")
+              div.card-text.team
+                div.d-flex.flex-column.align-items-center.justify-content-center
+                  div.text-center(style="font-size:9px;")
+                    strong
+                      div {{ (team.current_ranking) ? '(' + team.current_ranking + ')' : '' }} {{ team.full_name }}
+                  img.img-fluid(:src="'file/s3/' + team.logo_local_filename")
+                  div.schedule.d-flex
+                    ul.list-unstyled
+                      li(:style="getResultOrStyle(event, team, 'style')",v-for="event in teamSpecificEvents(team.full_name)")
+                        div.d-flex.flex-row.justify-content-center
+                          div
+                            i {{ getFormattedDate(event.event_timestamp) }} -&nbsp;
+                          div.d-flex.flex-row.justify-content-center
+                            div {{ getAtOrVs(event, team) }}&nbsp;
+                            div {{ getOtherTeam(event, team) }}&nbsp;
+                            div(v-if="getResultOrStyle(event, team)")
+                              strong ({{ getResultOrStyle(event, team) }})
 </template>
 
 <script>
   import moment from 'moment'
   import TimeHelpers from '../factories/TimeHelpers'
   import Snackbar from '../factories/Snackbar'
-  import CfbData from '../factories/CfbData'
+  import ApiData from '../factories/ApiData'
 
   export default {
+    props: [ 'league' ],
+
     data() {
       return {
+        isLoading: true,
         selectFilterOptions: [],
-        selectFilter: 'today',
+        selectFilter: null,
         searchFilter: null,
+        selectedLeagueName: this.league,
+        leagues: [],
         teams: [],
         events: []
       }
@@ -80,6 +93,10 @@
         return TimeHelpers.getFormattedDate(datetime, format)
       },
 
+      isLeagueActiveClass(leagueName) {
+        return (leagueName.toLowerCase() == this.selectedLeagueName.toLowerCase()) ? { fontWeight: 'bold' } : {}
+      },
+
       getAtOrVs(event, team) {
         const homeTeam = event.home_full_name
         const visitingTeam = event.visiting_full_name
@@ -107,10 +124,10 @@
             return '0-0'
         }
 
-        const isGameFinal     = event.event_status === 'STATUS_FINAL'
-        const isGamePostponed = event.event_status === 'STATUS_POSTPONED'
-        const isGameCancelled = event.event_status === 'STATUS_CANCELLED'
-        const isPlaying       = event.event_status === 'STATUS_IN_PROGRESS'
+        const isGameFinal     = event.event_status === 'final'
+        const isGamePostponed = event.event_status === 'postponed'
+        const isGameCancelled = event.event_status === 'cancelled'
+        const isPlaying       = event.event_status === 'progress'
 
         const homeTeam = event.home_full_name
         const homeTeamScore = event.home_team_score
@@ -144,8 +161,8 @@
 
       getTeamColorStyle(team, justColor=false) {
         if (justColor)
-          return `#${team.team_color}`
-        return { color: `#${team.team_color}` }
+          return `#${team.team_color1}`
+        return { color: `#${team.team_color1}` }
       },
 
       teamSpecificEvents(teamFullName) {
@@ -156,21 +173,27 @@
     },
 
     async created() {
-      const info = await CfbData.getAll()
+      this.selectedLeagueName = this.selectedLeagueName || 'ncaaf'
+
+      const info = await ApiData.getAll(this.selectedLeagueName)
+      this.leagues = info.leagues.sort()
       this.events = info.events
       this.teams = info.teams.sort((t1, t2) => {
         if (t1.location.toLowerCase() < t2.location.toLowerCase())
           return -1
         return 1
       })
-      this.conferences = info.conferences
+      this.conferences = info.conferences || []
 
       this.selectFilterOptions = [
         { text: `All Teams`, value: 'all' },
         { text: `All Teams with Games Today`, value: 'today' }
-      ].concat(
-        this.conferences.map(c => ({ text: `${c} (conference)`, value: c }))
-      )
+      ]
+      .concat(this.conferences.map(c => ({ text: `${c} (conference)`, value: c })))
+      .filter(c => !!c.value)
+
+      this.selectFilter = (this.conferences.length > 0) ? this.conferences[ Math.floor(Math.random() * this.conferences.length) ] : 'all'
+      this.isLoading = false
     }
   }
 </script>

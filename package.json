@@ -1,14 +1,14 @@
 {
-  "name": "ncaaf-schedules-scores",
+  "name": "sports-schedules-scores",
   "version": "0.1.0",
-  "description": "College Football schedules and scores.",
+  "description": "Sports schedules and scores.",
   "main": "forever.js",
   "engines": {
-    "node": "8.4.0"
+    "node": "8.9.0"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/whatl3y/ncaaf-schedules-scores.git"
+    "url": "https://github.com/whatl3y/sports-schedules-scores.git"
   },
   "scripts": {
     "dev": "nodemon --exec 'nf start'",
@@ -47,6 +47,7 @@
     "pg-query-stream": "^1.0.0",
     "pug": "^2.0.0-rc.3",
     "request": "^2.81.0",
+    "request-promise-native": "^1.0.5",
     "socket.io": "^1.7.3",
     "throng": "^4.0.0"
   },

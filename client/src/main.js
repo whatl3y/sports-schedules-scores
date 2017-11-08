@@ -10,7 +10,7 @@ import router from './router'
 // external libraries and components
 import 'whatwg-fetch'
 import Toastr from 'vue-toastr'
-import Datepicker from './components/Datepicker'
+import Loader from './components/Loader'
 
 // css
 import 'vue-toastr/src/vue-toastr.less'
@@ -27,7 +27,7 @@ if ('addEventListener' in document)
 
 Vue.use(BootstrapVue)
 Vue.component('vue-toastr', Toastr)
-Vue.component('datepicker', Datepicker)
+Vue.component('loader', Loader)
 
 Vue.config.productionTip = false
 
