@@ -172,6 +172,7 @@ const api       = SportsApi()
               home_team_id:         homeTeamId,
               visiting_team_id:     awayTeamId,
               event_type:           game.game_type,
+              event_status:         game.event_status,
               home_team_score:      (currScores && currScores.score.home) ? currScores.score.home.score : null,
               visiting_team_score:  (currScores && currScores.score.away) ? currScores.score.away.score : null,
               current_period:       (currScores) ? currScores.progress.segment : null,
