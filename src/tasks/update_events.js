@@ -29,21 +29,21 @@ const api       = SportsApi()
     let endDate     = argv.e || argv.end
 
     if (startDate)
-      startDate = moment(startDate)
+      startDate = (startDate.toLowerCase() === 'today') ? moment.utc() : moment.utc(startDate)
 
     if (endDate)
-      endDate = moment(endDate)
+      endDate = moment.utc(endDate)
 
     if (startDate && timeSpan) {
       switch (timeSpan) {
         case 'month':
-          endDate = startDate.clone().add(1, 'month')
+          endDate = startDate.clone().add(1, 'months')
           break
         case 'week':
-          endDate = startDate.clone().add(1, 'week')
+          endDate = startDate.clone().add(1, 'weeks')
           break
         case 'day':
-          endDate = startDate.clone().add(1, 'day')
+          endDate = startDate.clone().add(1, 'days')
           break
       }
     }
@@ -92,7 +92,8 @@ const api       = SportsApi()
             const homeExists = await teams.findByMultipleColums({ league_id: leagueId, location: homeTeam.medium_name })
             if (homeExists) {
               teams.setRecord({
-                current_ranking: (top25Rankings) ? top25Rankings.home : null
+                current_ranking:  (top25Rankings) ? top25Rankings.home : null,
+                complete_json:    JSON.stringify({ team: homeTeam, standings: homeStandings })
               })
             } else {
               let imageNameHome
@@ -119,7 +120,8 @@ const api       = SportsApi()
                 api_url:                  homeTeam.api_uri,
                 resource_url:             homeTeam.resource_uri,
                 conference_abbreviation:  homeStandings.conference,
-                conference_name:          homeStandings.conference_abbreviation
+                conference_name:          homeStandings.conference_abbreviation,
+                complete_json:            JSON.stringify({ team: homeTeam, standings: homeStandings })
               })
               log.debug("New (home) team to insert", teams.record)
             }
@@ -131,7 +133,8 @@ const api       = SportsApi()
             const awayExists = await teams.findByColumn(awayTeam.medium_name, 'location')
             if (awayExists) {
               teams.setRecord({
-                current_ranking: (top25Rankings) ? top25Rankings.away : null
+                current_ranking:  (top25Rankings) ? top25Rankings.away : null,
+                complete_json:    JSON.stringify({ team: awayTeam, standings: awayStandings })
               })
             } else {
               let imageNameAway
@@ -158,7 +161,8 @@ const api       = SportsApi()
                 api_url:                  awayTeam.api_uri,
                 resource_url:             awayTeam.resource_uri,
                 conference_abbreviation:  awayStandings.conference,
-                conference_name:          awayStandings.conference_abbreviation
+                conference_name:          awayStandings.conference_abbreviation,
+                complete_json:            JSON.stringify({ team: awayTeam, standings: awayStandings })
               })
               log.debug("New (away) team to insert", teams.record)
             }
@@ -179,7 +183,8 @@ const api       = SportsApi()
               current_clock:        (currScores) ? currScores.progress.clock : null,
               odds_spread:          (gameOdds) ? gameOdds.line : null,
               odds_over_under:      (gameOdds) ? gameOdds.over_under : null,
-              event_timestamp:      moment.utc(game.game_date).toDate()
+              event_timestamp:      moment.utc(game.game_date).toDate(),
+              complete_json:        JSON.stringify(game)
             })
             await events.save('api_uid')
 

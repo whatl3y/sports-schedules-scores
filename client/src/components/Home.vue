@@ -174,7 +174,11 @@
       this.selectedLeagueName = this.selectedLeagueName || 'ncaaf'
 
       const info = await ApiData.getAll(this.selectedLeagueName)
-      this.leagues = info.leagues.sort()
+      this.leagues = info.leagues.sort((l1, l2) => {
+        if (l1.uri_name.toLowerCase() < l2.uri_name.toLowerCase())
+          return -1
+        return 1
+      })
       this.events = info.events
       this.teams = info.teams.sort((t1, t2) => {
         if (t1.location.toLowerCase() < t2.location.toLowerCase())
@@ -190,7 +194,7 @@
       .concat(this.conferences.map(c => ({ text: `${c} (conference)`, value: c })))
       .filter(c => !!c.value)
 
-      this.selectFilter = (this.conferences.length > 0) ? this.conferences[ Math.floor(Math.random() * this.conferences.length) ] : 'all'
+      this.selectFilter = (this.conferences.length > 1) ? this.conferences[ Math.floor(Math.random() * this.conferences.length) ] : 'all'
       this.isLoading = false
     }
   }
