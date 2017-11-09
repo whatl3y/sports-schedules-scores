@@ -130,7 +130,7 @@ const api       = SportsApi()
 
             teams.resetRecord()
 
-            const awayExists = await teams.findByColumn(awayTeam.medium_name, 'location')
+            const awayExists = await teams.findByMultipleColums({ league_id: leagueId, location: awayTeam.medium_name })
             if (awayExists) {
               teams.setRecord({
                 current_ranking:  (top25Rankings) ? top25Rankings.away : null,
