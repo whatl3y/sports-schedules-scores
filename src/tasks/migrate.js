@@ -14,7 +14,9 @@ const postgres = new PostgresClient(postgres_url, {max: 1})
       createTeams(postgres),
       createTeamsIndexes(postgres),
       createEvents(postgres),
-      createEventsIndexes(postgres)
+      createEventsIndexes(postgres),
+      createCompleteJsonColumnInEvents(postgres),
+      createCompleteJsonColumnInTeams(postgres)
     ])
 
     log.info("Successfully ran DB migrations!")
@@ -98,4 +100,12 @@ async function createEventsIndexes(postgres) {
   await postgres.query(`CREATE INDEX CONCURRENTLY IF NOT EXISTS events_league_id on events (league_id)`)
   await postgres.query(`CREATE INDEX CONCURRENTLY IF NOT EXISTS events_home_team_id on events (home_team_id)`)
   await postgres.query(`CREATE INDEX CONCURRENTLY IF NOT EXISTS events_visiting_team_id on events (visiting_team_id)`)
+}
+
+async function createCompleteJsonColumnInEvents(postgres) {
+  await postgres.addColumnIfNotExists('events', 'complete_json', 'text')
+}
+
+async function createCompleteJsonColumnInTeams(postgres) {
+  await postgres.addColumnIfNotExists('teams', 'complete_json', 'text')
 }

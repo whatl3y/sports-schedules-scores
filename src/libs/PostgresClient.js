@@ -122,6 +122,20 @@ export default class PostgresClient {
     this.pool.end()
   }
 
+  async addColumnIfNotExists(table, column, columnType) {
+    await this.query(`
+      DO $$
+          BEGIN
+              BEGIN
+                  ALTER TABLE ${table} ADD COLUMN ${column} ${columnType};
+              EXCEPTION
+                  WHEN duplicate_column THEN RAISE NOTICE 'column ${column} already exists in ${table}.';
+              END;
+          END;
+      $$
+    `)
+  }
+
   parseConnectionString(string, ssl=true) {
     const parsedUrl = url.parse(string)
     let config = {

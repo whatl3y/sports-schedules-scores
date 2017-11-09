@@ -87,9 +87,7 @@
       getTimeFromNow:   TimeHelpers.getTimeFromNow,
       relativeDate:     TimeHelpers.getTimeDifferenceFromUnits,
 
-      getFormattedDate(datetime, format='MM/DD/YYYY h:mm a') {
-        if (parseInt(moment.utc(datetime).format('H')) >= 0 && parseInt(moment.utc(datetime).format('H')) <= 9)
-          format = 'MM/DD/YYYY'
+      getFormattedDate(datetime, format='YYYY-MM-DD h:mm a') {
         return TimeHelpers.getFormattedDate(datetime, format)
       },
 

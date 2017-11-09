@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@slack/client": "^3.13.0",
-    "async": "^2.5.0",
+    "async": "^2.6.0",
     "aws-sdk": "^2.107.0",
     "babel-core": "^6.24.1",
     "babel-loader": "^6.4.1",
@@ -46,6 +46,7 @@
     "pg": "^6.1.5",
     "pg-query-stream": "^1.0.0",
     "pug": "^2.0.0-rc.3",
+    "redis": "^2.8.0",
     "request": "^2.81.0",
     "request-promise-native": "^1.0.5",
     "socket.io": "^1.7.3",

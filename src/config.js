@@ -16,6 +16,10 @@ export default {
     level:  process.env.NEWRELIC_LEVEL || 'info'
   },
 
+  redis: {
+    url: process.env.REDIS_URL || 'redis://localhost:6379'
+  },
+
   postgres: {
     connection_string: process.env.DATABASE_URL || 'postgres://localhost:5432/sports'
   },
