@@ -11,7 +11,7 @@ export default function Events(postgres) {
         'api_uid', 'league_id', 'home_team_id', 'visiting_team_id', 'event_type',
         'home_team_score', 'visiting_team_score', 'current_period',
         'current_clock', 'event_status', 'odds_spread', 'odds_over_under',
-        'event_timestamp'
+        'event_timestamp', 'complete_json'
       ],
 
       async getAllByLeagueId(leagueId) {

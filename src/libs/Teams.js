@@ -11,7 +11,8 @@ export default function Teams(postgres) {
         'api_uid', 'league_id', 'current_ranking', 'location', 'name',
         'full_name', 'abbreviation', 'physical_location', 'team_color1',
         'team_color2', 'logo_url', 'logo_local_filename', 'api_url',
-        'resource_url', 'conference_abbreviation', 'conference_name'
+        'resource_url', 'conference_abbreviation', 'conference_name',
+        'complete_json'
       ],
 
       async getAll(leagueId) {
