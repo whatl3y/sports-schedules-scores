@@ -29,7 +29,22 @@ export default function Events(postgres) {
             tv.team_color1 as visiting_team_color,
             tv.logo_url as visiting_logo_url,
             tv.conference_abbreviation as visiting_conference_abbreviation,
-            e.*
+            e.id,
+            e.api_uid,
+            e.league_id,
+            e.home_team_id,
+            e.visiting_team_id,
+            e.event_type,
+            e.home_team_score,
+            e.visiting_team_score,
+            e.current_period,
+            e.current_clock,
+            e.event_status,
+            e.odds_spread,
+            e.odds_over_under,
+            e.event_timestamp,
+            e.created_at,
+            e.updated_at
           from events as e
           inner join teams as th on th.id = e.home_team_id
           inner join teams as tv on tv.id = e.visiting_team_id
