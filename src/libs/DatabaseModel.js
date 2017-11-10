@@ -25,7 +25,6 @@ export default function DatabaseModel(postgres, table) {
       return null
     },
 
-    // TODO use prepared statement instead of manually escaping to prevent injection
     // Uses AND logic between columns
     // Ex. keyValuePairs = { col1: 'val1', col2: 'col2', ... }
     async findByMultipleColums(keyValuePairs) {
@@ -42,24 +41,28 @@ export default function DatabaseModel(postgres, table) {
       return null
     },
 
-    async findOrCreateByColumn(value, column='name') {
-      const check = await this.findByColumn(value, column)
+    // Ex. keyValuePairs = { col1: 'val1', col2: 'col2', ... }
+    async findOrCreateBy(keyValuePairs) {
+      const check = await this.findByMultipleColums(keyValuePairs)
       if (check)
         return this.record = check
 
-      const result = await postgres.query(`insert into ${table} (${column}) values ($1) returning id`, [value])
-      const newId = result.rows[0].id
-      this.record = { id: newId, [column]: value }
+      this.record   = keyValuePairs
+      const result  = await this.save()
+      const newId   = result.rows[0].id
+      this.record   = Object.assign(keyValuePairs, { id: newId })
       return this.record
     },
 
-    async save(uniqueColumnIfNoId) {
+    async save(uniqueColumnIfNoId=null) {
       const keysInRecord = Object.keys(this.record)
       if (keysInRecord.length > 0) {
+        let queryAry,
+            paramsAry = [],
+            paramIndTracker = 1
+
         if (this.record.id) {
-          let queryAry = [`update ${table} set`]
-          let paramsAry = []
-          let paramIndTracker = 1
+          queryAry = [`update ${table} set`]
 
           keysInRecord.forEach(key => {
             if (this.accessibleColumns.indexOf(key) === -1) return
@@ -70,19 +73,37 @@ export default function DatabaseModel(postgres, table) {
           })
           if (paramsAry.length === 0) return false
 
-          queryAry.push('updated_at = now()')
+          queryAry.push(`updated_at = now() at time zone 'utc'`)
           queryAry.push(`where id = $${paramIndTracker}`)
           paramsAry.push(this.record.id)
 
           const queryString = queryAry.join(' ')
-          const { rows } = await postgres.query(queryString, paramsAry)
+          await postgres.query(queryString, paramsAry)
           return true
 
-        } else if (this.record[uniqueColumnIfNoId]) {
+        } else if (uniqueColumnIfNoId && this.record[uniqueColumnIfNoId]) {
           const currentRecord = Object.assign({}, this.record)
-          await this.findOrCreateByColumn(this.record[uniqueColumnIfNoId], uniqueColumnIfNoId)
+          await this.findOrCreateBy({ [uniqueColumnIfNoId]: this.record[uniqueColumnIfNoId] })
           this.record = Object.assign(this.record, currentRecord)
           return await this.save()
+
+        } else { // insert new record
+          queryAry = [`insert into ${table} (`]
+          let paramList = []
+
+          keysInRecord.forEach(key => {
+            if (this.accessibleColumns.indexOf(key) === -1) return
+
+            queryAry.push(`${key},`)
+            paramList.push(`$${paramIndTracker}`)
+            paramsAry.push(this.record[key])
+            paramIndTracker++
+          })
+
+          queryAry.push(`created_at, updated_at) values (${paramList.join(',')}, now() at time zone 'utc', now() at time zone 'utc') returning id`)
+          const qs = queryAry.join(' ')
+          await postgres.query(qs, paramsAry)
+          return true
         }
       }
       return false

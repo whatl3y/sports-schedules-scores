@@ -14,9 +14,7 @@ const postgres = new PostgresClient(postgres_url, {max: 1})
       createTeams(postgres),
       createTeamsIndexes(postgres),
       createEvents(postgres),
-      createEventsIndexes(postgres),
-      createCompleteJsonColumnInEvents(postgres),
-      createCompleteJsonColumnInTeams(postgres)
+      createEventsIndexes(postgres)
     ])
 
     log.info("Successfully ran DB migrations!")
@@ -61,6 +59,7 @@ async function createTeams(postgres) {
       resource_url varchar(255),
       conference_abbreviation varchar(255),
       conference_name varchar(255),
+      complete_json text,
       created_at timestamp(6) without time zone NOT NULL DEFAULT now(),
       updated_at timestamp(6) without time zone NOT NULL DEFAULT now()
     );
@@ -90,6 +89,7 @@ async function createEvents(postgres) {
       odds_spread varchar(255),
       odds_over_under varchar(255),
       event_timestamp timestamp,
+      complete_json text,
       created_at timestamp(6) without time zone NOT NULL DEFAULT now(),
       updated_at timestamp(6) without time zone NOT NULL DEFAULT now()
     );
@@ -102,10 +102,6 @@ async function createEventsIndexes(postgres) {
   await postgres.query(`CREATE INDEX CONCURRENTLY IF NOT EXISTS events_visiting_team_id on events (visiting_team_id)`)
 }
 
-async function createCompleteJsonColumnInEvents(postgres) {
-  await postgres.addColumnIfNotExists('events', 'complete_json', 'text')
-}
-
-async function createCompleteJsonColumnInTeams(postgres) {
-  await postgres.addColumnIfNotExists('teams', 'complete_json', 'text')
-}
+// async function createCompleteJsonColumnInEvents(postgres) {
+//   await postgres.addColumnIfNotExists('events', 'complete_json', 'text')
+// }

@@ -58,7 +58,7 @@ const api       = SportsApi()
 
     await Promise.each(leagueAry, async internalLeague => {
       const [ leagueInfo, ids ] = await Promise.all([
-        leagues.findOrCreateByColumn(internalLeague, 'uri_name'),
+        leagues.findOrCreateBy({ uri_name: internalLeague }),
         api.getEventIdsFromSchedule(internalLeague, { startDate, endDate })
       ])
       const leagueId        = leagueInfo.id
@@ -125,7 +125,7 @@ const api       = SportsApi()
               })
               log.debug("New (home) team to insert", teams.record)
             }
-            await teams.save('location')
+            await teams.findOrCreateBy({ league_id: teams.record.league_id, location: teams.record.location })
             const homeTeamId = teams.record.id
 
             teams.resetRecord()
@@ -166,7 +166,7 @@ const api       = SportsApi()
               })
               log.debug("New (away) team to insert", teams.record)
             }
-            await teams.save('location')
+            await teams.findOrCreateBy({ league_id: teams.record.league_id, location: teams.record.location })
             const awayTeamId = teams.record.id
 
             // Handle inserting / updating events
