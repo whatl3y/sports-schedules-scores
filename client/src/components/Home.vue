@@ -4,10 +4,10 @@
       loader
     div(v-if="!isLoading")
       div.league-nav(v-if="leagues.length > 0")
-        span &nbsp;|&nbsp;
+        span |&nbsp;
         span(v-for="league in leagues")
           a(:href="'/' + league.uri_name",:style="isLeagueActiveClass(league.uri_name)") {{ league.uri_name.toUpperCase() }}
-          span &nbsp;|&nbsp;
+          span  |&nbsp;
       div.container-fluid
         h1 {{ selectedLeagueName.toUpperCase() }} Schedules and Scores
         div.row
