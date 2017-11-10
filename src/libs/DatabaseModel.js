@@ -78,8 +78,7 @@ export default function DatabaseModel(postgres, table) {
           paramsAry.push(this.record.id)
 
           const queryString = queryAry.join(' ')
-          await postgres.query(queryString, paramsAry)
-          return true
+          return await postgres.query(queryString, paramsAry)
 
         } else if (uniqueColumnIfNoId && this.record[uniqueColumnIfNoId]) {
           const currentRecord = Object.assign({}, this.record)
@@ -102,8 +101,7 @@ export default function DatabaseModel(postgres, table) {
 
           queryAry.push(`created_at, updated_at) values (${paramList.join(',')}, now() at time zone 'utc', now() at time zone 'utc') returning id`)
           const qs = queryAry.join(' ')
-          await postgres.query(qs, paramsAry)
-          return true
+          return await postgres.query(qs, paramsAry)
         }
       }
       return false
