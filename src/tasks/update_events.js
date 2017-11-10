@@ -57,6 +57,8 @@ const api       = SportsApi()
       leagueAry = [ league ]
 
     await Promise.each(leagueAry, async internalLeague => {
+      leagues.resetRecord()
+
       const [ leagueInfo, ids ] = await Promise.all([
         leagues.findOrCreateBy({ uri_name: internalLeague }),
         api.getEventIdsFromSchedule(internalLeague, { startDate, endDate })
