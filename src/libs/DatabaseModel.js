@@ -27,7 +27,7 @@ export default function DatabaseModel(postgres, table) {
 
     // Uses AND logic between columns
     // Ex. keyValuePairs = { col1: 'val1', col2: 'col2', ... }
-    async findByMultipleColums(keyValuePairs) {
+    async findBy(keyValuePairs) {
       const columnAry     = Object.keys(keyValuePairs)
       const paramsAry     = []
       const filters       = columnAry.map((col, ind) => {
@@ -43,7 +43,7 @@ export default function DatabaseModel(postgres, table) {
 
     // Ex. keyValuePairs = { col1: 'val1', col2: 'col2', ... }
     async findOrCreateBy(keyValuePairs) {
-      const check = await this.findByMultipleColums(keyValuePairs)
+      const check = await this.findBy(keyValuePairs)
       if (check)
         return this.record = check
 

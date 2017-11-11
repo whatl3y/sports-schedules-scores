@@ -68,6 +68,7 @@ async function createTeams(postgres) {
 
 async function createTeamsIndexes(postgres) {
   await postgres.query(`CREATE INDEX CONCURRENTLY IF NOT EXISTS teams_league_id on teams (league_id)`)
+  await postgres.query(`CREATE INDEX CONCURRENTLY IF NOT EXISTS teams_api_uid on teams (api_uid)`)
   await postgres.query(`CREATE INDEX CONCURRENTLY IF NOT EXISTS teams_location on teams (location)`)
   await postgres.query(`CREATE INDEX CONCURRENTLY IF NOT EXISTS teams_name on teams (name)`)
 }

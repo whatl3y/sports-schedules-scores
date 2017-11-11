@@ -91,7 +91,7 @@ const api       = SportsApi()
 
             log.debug("Home Team", homeTeam)
             log.debug("Away Team", awayTeam)
-            const homeExists = await teams.findByMultipleColums({ league_id: leagueId, location: homeTeam.medium_name })
+            const homeExists = await teams.findBy({ league_id: leagueId, location: homeTeam.medium_name })
             if (homeExists) {
               teams.setRecord({
                 current_ranking:  (top25Rankings) ? top25Rankings.home : null,
@@ -132,7 +132,7 @@ const api       = SportsApi()
 
             teams.resetRecord()
 
-            const awayExists = await teams.findByMultipleColums({ league_id: leagueId, location: awayTeam.medium_name })
+            const awayExists = await teams.findBy({ league_id: leagueId, location: awayTeam.medium_name })
             if (awayExists) {
               teams.setRecord({
                 current_ranking:  (top25Rankings) ? top25Rankings.away : null,

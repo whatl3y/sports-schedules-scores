@@ -5,11 +5,11 @@
 </template>
 
 <script>
-export default {
-  name: 'CFB',
-  mounted() {
-    this.$root.$refs = Object.assign(this.$root.$refs, {toastr: this.$refs.toastr})
-    this.$refs.toastr.defaultPosition = "toast-bottom-right"
+  export default {
+    name: 'Sports',
+    mounted() {
+      this.$root.$refs = Object.assign(this.$root.$refs, {toastr: this.$refs.toastr})
+      this.$refs.toastr.defaultPosition = "toast-bottom-right"
+    }
   }
-}
 </script>
