@@ -54,6 +54,16 @@ export default function DatabaseModel(postgres, table) {
       return this.record
     },
 
+    // Ex. keyValuePairs = { col1: 'val1', col2: 'col2', ... }
+    async updateOrCreateBy(keyValuePairs) {
+      const currentRecord = Object.assign({}, this.record)
+      const returnedRecord = await this.findBy(keyValuePairs)
+      this.record = Object.assign(returnedRecord || {}, currentRecord, keyValuePairs)
+
+      await this.save()
+      return this.record
+    },
+
     async save(uniqueColumnIfNoId=null) {
       const keysInRecord = Object.keys(this.record)
       if (keysInRecord.length > 0) {

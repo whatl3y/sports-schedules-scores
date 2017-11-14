@@ -58,18 +58,22 @@ export default function Events(postgres) {
       async getAllByTeamId(teamId) {
         const { rows } = await postgres.query(`
           select
+            th.api_uid as home_api_uid,
             th.full_name as home_full_name,
             th.abbreviation as home_abbreviation,
             th.location as home_location,
             th.team_color1 as home_team_color,
             th.logo_url as home_logo_url,
             th.conference_abbreviation as home_conference_abbreviation,
+            th.logo_local_filename as home_local_filename,
+            tv.api_uid as visiting_api_uid,
             tv.full_name as visiting_full_name,
             tv.abbreviation as visiting_abbreviation,
             tv.location as visiting_location,
             tv.team_color1 as visiting_team_color,
             tv.logo_url as visiting_logo_url,
             tv.conference_abbreviation as visiting_conference_abbreviation,
+            tv.logo_local_filename as visiting_local_filename,
             e.*
           from events as e
           inner join teams as th on th.id = e.home_team_id
@@ -77,6 +81,7 @@ export default function Events(postgres) {
           where
             th.id = $1 or
             tv.id = $2
+          order by e.event_timestamp;
         `, [ teamId, teamId ])
         return rows
       }

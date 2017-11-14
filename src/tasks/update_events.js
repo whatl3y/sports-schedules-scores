@@ -127,7 +127,7 @@ const api       = SportsApi()
               })
               log.debug("New (home) team to insert", teams.record)
             }
-            await teams.findOrCreateBy({ league_id: teams.record.league_id, location: teams.record.location })
+            await teams.updateOrCreateBy({ league_id: teams.record.league_id, location: teams.record.location })
             const homeTeamId = teams.record.id
 
             teams.resetRecord()
@@ -168,7 +168,7 @@ const api       = SportsApi()
               })
               log.debug("New (away) team to insert", teams.record)
             }
-            await teams.findOrCreateBy({ league_id: teams.record.league_id, location: teams.record.location })
+            await teams.updateOrCreateBy({ league_id: teams.record.league_id, location: teams.record.location })
             const awayTeamId = teams.record.id
 
             // Handle inserting / updating events
@@ -188,7 +188,7 @@ const api       = SportsApi()
               event_timestamp:      moment.utc(game.game_date).toDate(),
               complete_json:        JSON.stringify(game)
             })
-            await events.save('api_uid')
+            await events.updateOrCreateBy({ league_id: events.record.league_id, api_uid: events.record.api_uid })
 
           } catch(err) {
             log.error("Error processing event", err)

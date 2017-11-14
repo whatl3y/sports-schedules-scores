@@ -4,7 +4,7 @@ export default {
   getFormattedDate(timestamp, format="MMMM Do, YYYY") {
     //'MMMM Do, YYYY h:mm a' ex: August 11th, 2017 4:00 pm
     if (timestamp)
-      return moment(timestamp).format(format)
+      return moment.utc(timestamp).format(format)
     return null
   },
 

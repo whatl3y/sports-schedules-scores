@@ -3,15 +3,24 @@
     div(v-if="isLoading")
       loader
     div(v-if="!isLoading")
-      div.container(:style="{ color: '#' + team.team_color1 }")
-        h1.text-center
-          img(style="max-width:80px",:src="'/file/s3/' + team.logo_local_filename")
-          span {{ team.full_name }}
-        div.text-center(style="margin-top:60px")
-          i Team page coming soon...
+      b-col
+        small
+          a(:href="'/league/' + league") Back to {{ league.toUpperCase() }} Home
+      b-container
+        div.text-center(:style="{ color: '#' + team.team_color1 }")
+          h1.title
+            img(style="max-width:100px",:src="'/file/s3/' + team.logo_local_filename")
+            span  {{ team.full_name }}
+            span(v-if="team.current_ranking")  ({{ team.current_ranking }})
+          h5(v-if="teamComplete.standings.short_record") Record: {{ teamComplete.standings.short_record }} ({{ teamComplete.standings.streak }})
+        hr
+        h1 Schedule
+        div.d-flex.justify-content-center.align-items-center
+          schedule-large(:league="league",:events="events",:team="team")
 </template>
 
 <script>
+  import ScheduleLarge from './ScheduleLarge'
   import TimeHelpers from '../factories/TimeHelpers'
   import TeamData from '../factories/TeamData'
 
@@ -40,8 +49,19 @@
 
       this.events = events
       this.team = team
+      this.teamComplete = JSON.parse(this.team.complete_json)
 
       this.isLoading = false
+    },
+
+    components: {
+      ScheduleLarge
     }
   }
 </script>
+
+<style scoped>
+  .title {
+    font-size: 3.5rem;
+  }
+</style>

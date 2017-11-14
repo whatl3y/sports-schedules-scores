@@ -17,7 +17,7 @@ export default async function ApiTeams(req, res) {
     const leagueName  = req.params.league
     const teamId      = parseInt(req.params.teamid)
     const league      = await leagues.findByColumn(leagueName, 'uri_name')
-    const team        = await teams.findBy({ league_id: league.id, api_uid: teamId})
+    const team        = await teams.findBy({ league_id: league.id, api_uid: teamId })
 
     if (!team)
       return res.status(404).json({error: `Cannot find the team requested: ${teamId}`})
