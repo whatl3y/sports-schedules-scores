@@ -36,7 +36,7 @@
       },
 
       getResultOrStyle(event, heroTeam, type="result") {
-        const isInPast = moment.utc(event.event_timestamp).isBefore(moment())
+        const isInPast = moment(event.event_timestamp).isBefore(moment())
         if (!isInPast) {
           if (type == 'result')
             return '0-0'
