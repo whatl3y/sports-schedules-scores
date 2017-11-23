@@ -46,7 +46,10 @@
     computed: {
       filteredTeams() {
         let filteredTeams = this.teams.slice(0)
-        if (this.selectFilter != 'all') {
+
+        if (this.selectFilter == 'top25') {
+          filteredTeams = filteredTeams.filter(t => !!t.current_ranking)
+        } else if (this.selectFilter != 'all') {
           if (this.selectFilter == 'today') {
             filteredTeams = filteredTeams.filter(t => !!t.event_time_today)
             if (filteredTeams.length === 0) {
@@ -93,11 +96,10 @@
       })
       this.conferences = (info.conferences || []).filter(c => !!c)
 
-      this.selectFilterOptions = [
-        { text: `All Teams`, value: 'all' },
-        { text: `All Teams with Games Today`, value: 'today' }
-      ]
-      .concat(this.conferences.map(c => ({ text: `${c} (conference)`, value: c })))
+      let defaultFilterOptions = [{ text: `All Teams`, value: 'all' }, { text: `All Teams with Games Today`, value: 'today' }]
+      if (this.selectedLeagueName == 'ncaaf')
+        defaultFilterOptions.push({ text: `Top 25`, value: 'top25' })
+      this.selectFilterOptions = defaultFilterOptions.concat(this.conferences.map(c => ({ text: `${c} (conference)`, value: c })))
 
       this.selectFilter = (this.conferences.length > 3) ? this.conferences[ Math.floor(Math.random() * this.conferences.length) ] : 'all'
       this.isLoading = false
