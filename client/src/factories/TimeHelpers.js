@@ -41,6 +41,6 @@ export default {
   },
 
   getTimeFromNow(time) {
-    return moment.utc(time).fromNow()
+    return moment(time).fromNow()
   }
 }

@@ -13,6 +13,9 @@
                 b-form-select(v-model="selectFilter",:options="selectFilterOptions")
               div.col-sm-12.col-md-6
                 b-form-input(v-model="searchFilter",placeholder="Search for a team...")
+              div.col-12.margin-top-medium.text-center
+                small
+                  a(:href="'/league/' + league + '/schedule/' + getFormattedDate(today, 'YYYYMMDD')") See the full {{ league.toUpperCase() }} schedule for today
         hr(style="margin:20px 0px;")
         div.d-flex.flex-row.justify-content-center.flex-wrap
           div.event(:style="getTeamColorStyle(team)",v-for="(team, index) in filteredTeams",:id="'event' + index")
@@ -44,6 +47,8 @@
     },
 
     computed: {
+      today: moment,
+
       filteredTeams() {
         let filteredTeams = this.teams.slice(0)
 
@@ -68,6 +73,10 @@
     },
 
     methods: {
+      getFormattedDate(datetime, format='YYYY-MM-DD h:mm a') {
+        return TimeHelpers.getFormattedDate(datetime, format)
+      },
+
       isLeagueActiveClass(leagueName) {
         return (leagueName.toLowerCase() == this.selectedLeagueName.toLowerCase()) ? { fontWeight: 'bold' } : {}
       },

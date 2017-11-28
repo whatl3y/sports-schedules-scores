@@ -9,7 +9,7 @@
   import Datepicker from 'vuejs-datepicker'
 
   export default {
-    props: ['valueKey', 'label', 'placeholder', 'value'],
+    props: [ 'valueKey', 'label', 'placeholder', 'value' ],
     data() {
       return {
         date: null
@@ -24,7 +24,7 @@
     },
     mounted() {
       if (this.value)
-        this.date = moment.utc(this.value).toDate()
+        this.date = moment(this.value).toDate()
     },
     components: {
       dp: Datepicker

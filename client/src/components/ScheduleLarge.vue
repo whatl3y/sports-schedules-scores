@@ -21,7 +21,11 @@
   import ApiData from '../factories/ApiData'
 
   export default {
-    props: [ 'league', 'events', 'team' ],
+    props: {
+      league: String,
+      events: Array,
+      team: String
+    },
 
     data() {
       return {
@@ -35,7 +39,7 @@
         return TimeHelpers.getFormattedDate(datetime, format)
       },
 
-      getResultOrStyle(event, heroTeam, type="result") {
+      getResultOrStyle(event, heroTeam=null, type="result") {
         const isInPast = moment(event.event_timestamp).isBefore(moment())
         if (!isInPast) {
           if (type == 'result')
@@ -53,7 +57,7 @@
         const visitingTeamScore = event.visiting_team_score
 
         let heroTeamScore, villainTeamScore
-        if (homeTeam == heroTeam.full_name) {
+        if (!heroTeam || homeTeam == heroTeam.full_name) {
           heroTeamScore = homeTeamScore
           villainTeamScore = visitingTeamScore
         } else {
@@ -63,12 +67,14 @@
 
         switch (type) {
           case 'style':
+            if (!heroTeam) return {}
             if (isGameFinal) return { fontWeight: 'bold', color: (heroTeamScore > villainTeamScore) ? 'green' : 'red' }
             if (isPlaying) return { fontWeight: 'bold', color: 'orange' }
             if (isGamePostponed || isGameCancelled) return { textDecoration: 'italic', color: 'gray' }
             return {}
 
           default:
+            if (!heroTeam) return `${(heroTeamScore > villainTeamScore) ? 'H' : 'V'} ${villainTeamScore}-${heroTeamScore}`
             if (isGameFinal) {
               const wOrL = (heroTeamScore > villainTeamScore) ? 'W' : 'L'
               return `${wOrL} ${heroTeamScore}-${villainTeamScore}`
@@ -79,17 +85,18 @@
     },
 
     created() {
-      this.scheduleFields = [ 'date', 'event_location', { key: 'visiting_team' }, { key: 'home_team' }, 'spread', 'over_under', { key: 'result' } ]
+      this.scheduleFields = [ 'date', 'event_location', { key: 'visiting_team' }, { key: 'home_team' }, 'spread', 'over_under', { key: 'result' }, 'TV_listings' ]
       this.scheduleData = this.events.map(ev => {
-        const complete = JSON.parse(ev.complete_json)
+        const tvListings = JSON.parse(ev.tv_listings)
         return {
           date:           this.getFormattedDate(ev.event_timestamp),
-          event_location: complete.location,
+          event_location: ev.event_location || 'N/A',
           visiting_team:  { uid: ev.visiting_api_uid, name: ev.visiting_full_name, logo: ev.visiting_local_filename },
           home_team:      { uid: ev.home_api_uid, name: ev.home_full_name, logo: ev.home_local_filename },
           spread:         ev.odds_spread,
           over_under:     ev.odds_over_under,
-          result:         this.getResultOrStyle(ev, this.team)
+          result:         this.getResultOrStyle(ev, this.team),
+          TV_listings:     (tvListings && tvListings.us) ? tvListings.us.map(n => n.short_name).join(', ') : 'N/A'
         }
       })
     }

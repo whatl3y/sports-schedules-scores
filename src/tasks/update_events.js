@@ -186,6 +186,8 @@ const api       = SportsApi()
               odds_spread:          (gameOdds) ? gameOdds.line : null,
               odds_over_under:      (gameOdds) ? gameOdds.over_under : null,
               event_timestamp:      moment.utc(game.game_date).toDate(),
+              event_location:       game.location,
+              tv_listings:          JSON.stringify(game.tv_listings_by_country_code),
               complete_json:        JSON.stringify(game)
             })
             await events.updateOrCreateBy({ league_id: events.record.league_id, api_uid: events.record.api_uid })

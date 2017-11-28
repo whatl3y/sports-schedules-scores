@@ -59,9 +59,3 @@
     }
   }
 </script>
-
-<style scoped>
-  .title {
-    font-size: 3.5rem;
-  }
-</style>
