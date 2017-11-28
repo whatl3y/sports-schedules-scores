@@ -19,7 +19,7 @@ export default function Events(postgres) {
         let params = [ leagueId ]
         let additionalFilter = ''
         if (eventDate) {
-          additionalFilter = ` and (e.event_timestamp without time zone AT TIME ZONE 'UTC-8')::date = $2`
+          additionalFilter = ` and (e.event_timestamp::timestamp without time zone AT TIME ZONE 'UTC-8')::date = $2`
           params.push(moment(eventDate).format('YYYY-MM-DD'))
         }
 
