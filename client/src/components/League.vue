@@ -15,7 +15,7 @@
                 b-form-input(v-model="searchFilter",placeholder="Search for a team...")
               div.col-12.margin-top-medium.text-center
                 small
-                  a(:href="'/league/' + league + '/schedule/' + getFormattedDate(today, 'YYYYMMDD')") See the full {{ league.toUpperCase() }} schedule for today
+                  a(:href="'/league/' + league + '/schedule/' + getFormattedDate(today, 'YYYYMMDD')") See the full {{ selectedLeagueName.toUpperCase() }} schedule for today
         hr(style="margin:20px 0px;")
         div.d-flex.flex-row.justify-content-center.flex-wrap
           div.event(:style="getTeamColorStyle(team)",v-for="(team, index) in filteredTeams",:id="'event' + index")

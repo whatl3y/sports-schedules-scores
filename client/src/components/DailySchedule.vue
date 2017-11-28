@@ -33,7 +33,7 @@
       return {
         isLoading: true,
         events: [],
-        date: this.getFormattedDate(new Date(), 'YYYYMMDD')
+        date: this.getFormattedDate(moment.utc(), 'YYYYMMDD')
       }
     },
 
@@ -52,7 +52,7 @@
       },
 
       async getEvents() {
-        const { events } = await ApiData.getAllByDate(this.league, this.getFormattedDate(this.date, 'YYYYMMDD'))
+        const { events } = await ApiData.getAllByDate(this.league, this.date)
         this.events = events
       },
 
