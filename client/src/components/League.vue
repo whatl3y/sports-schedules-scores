@@ -7,15 +7,16 @@
       div.container-fluid
         h1 {{ selectedLeagueName.toUpperCase() }} Schedules and Scores
         div.row
+          div.col-12.margin-bottom-medium.text-right
+            small
+              a(:href="'/league/' + selectedLeagueName + '/schedule/' + getFormattedDate(today, 'YYYYMMDD')")
+                b-button.btn-sm(variant="primary") {{ selectedLeagueName.toUpperCase() }} Daily Schedule
           div.col-12.col-md-8.offset-md-2.col-lg-6.offset-lg-3
             div.row
               div.col-sm-12.col-md-6.margin-bottom-small
                 b-form-select(v-model="selectFilter",:options="selectFilterOptions")
               div.col-sm-12.col-md-6
                 b-form-input(v-model="searchFilter",placeholder="Search for a team...")
-              div.col-12.margin-top-medium.text-center
-                small
-                  a(:href="'/league/' + selectedLeagueName + '/schedule/' + getFormattedDate(today, 'YYYYMMDD')") See the full {{ selectedLeagueName.toUpperCase() }} schedule for today
         hr(style="margin:20px 0px;")
         div.d-flex.flex-row.justify-content-center.flex-wrap
           div.event(:style="getTeamColorStyle(team)",v-for="(team, index) in filteredTeams",:id="'event' + index")

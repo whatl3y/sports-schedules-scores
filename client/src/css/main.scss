@@ -55,6 +55,10 @@ html, body {
   }
 }
 
+.table td {
+  vertical-align: middle;
+}
+
 ul {
   &.tiny {
     padding-left: 3px;
