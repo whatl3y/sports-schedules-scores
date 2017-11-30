@@ -20,14 +20,13 @@ export default async function ApiEvents(req, res) {
     if (!league)
       return res.status(404).json({error: `Cannot find the league requested: ${leagueName}`})
 
-    const [ allLeagues, allEvents, allTeams, allConferences ] = await Promise.all([
-      leagues.getAll(),
+    const [ allEvents, allTeams, allConferences ] = await Promise.all([
       events.getAllByLeagueId(league.id),
       teams.getAll(league.id),
       teams.getAllConferences(league.id)
     ])
 
-    res.json({ events: allEvents, leagues: allLeagues, teams: allTeams, conferences: allConferences.map(c => c.conference_abbreviation) })
+    res.json({ events: allEvents, teams: allTeams, conferences: allConferences.map(c => c.conference_abbreviation) })
 
   } catch(err) {
     log.error(err)

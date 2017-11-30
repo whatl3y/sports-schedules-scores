@@ -3,7 +3,6 @@
     div(v-if="isLoading")
       loader
     div(v-if="!isLoading")
-      league-header(:leagues="leagues",:selected="selectedLeagueName")
       div.container-fluid
         h1 {{ selectedLeagueName.toUpperCase() }} Schedules and Scores
         div.row
@@ -25,7 +24,6 @@
 
 <script>
   import moment from 'moment'
-  import LeagueHeader from './LeagueHeader'
   import Schedule from './Schedule'
   import TimeHelpers from '../factories/TimeHelpers'
   import Snackbar from '../factories/Snackbar'
@@ -93,11 +91,6 @@
       this.selectedLeagueName = this.selectedLeagueName || 'ncaaf'
 
       const info = await ApiData.getAll(this.selectedLeagueName)
-      this.leagues = info.leagues.sort((l1, l2) => {
-        if (l1.uri_name.toLowerCase() < l2.uri_name.toLowerCase())
-          return -1
-        return 1
-      })
       this.events = info.events
       this.teams = info.teams.sort((t1, t2) => {
         if (t1.location.toLowerCase() < t2.location.toLowerCase())
@@ -116,7 +109,6 @@
     },
 
     components: {
-      LeagueHeader,
       Schedule
     }
   }
