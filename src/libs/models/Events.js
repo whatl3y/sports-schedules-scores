@@ -1,5 +1,5 @@
 import moment from 'moment'
-import config from '../config'
+import config from '../../config'
 import DatabaseModel from './DatabaseModel'
 
 export default function Events(postgres) {
