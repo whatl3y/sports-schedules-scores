@@ -6,9 +6,9 @@ import { createNestedArrays } from '../libs/Helpers'
 import PostgresClient from '../libs/PostgresClient'
 import Aws from '../libs/Aws'
 import SportsApi from '../libs/SportsApi'
-import Events from '../libs/Events'
-import Leagues from '../libs/Leagues'
-import Teams from '../libs/Teams'
+import Events from '../libs/models/Events'
+import Leagues from '../libs/models/Leagues'
+import Teams from '../libs/models/Teams'
 import config from '../config'
 
 const argv = minimist(process.argv.slice(2), { string: [ 'l', 'league', 's', 'start', 'e', 'end' ] })

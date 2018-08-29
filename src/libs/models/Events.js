@@ -62,7 +62,9 @@ export default function Events(postgres) {
           inner join teams as th on th.id = e.home_team_id
           inner join teams as tv on tv.id = e.visiting_team_id
           inner join leagues as l on l.id = e.league_id and l.id = th.league_id and l.id = tv.league_id
-          where l.id = $1
+          where
+            l.id = $1 and
+            e.is_current_season is not false
           ${additionalFilter}
           order by e.event_timestamp;
         `, params)
@@ -93,8 +95,8 @@ export default function Events(postgres) {
           inner join teams as th on th.id = e.home_team_id
           inner join teams as tv on tv.id = e.visiting_team_id
           where
-            th.id = $1 or
-            tv.id = $2
+            (th.id = $1 or tv.id = $2) and
+            e.is_current_season is not false
           order by e.event_timestamp;
         `, [ teamId, teamId ])
         return rows

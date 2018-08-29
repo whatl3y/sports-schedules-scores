@@ -3,9 +3,9 @@ import PostgresClient from '../libs/PostgresClient'
 import config from '../config'
 
 const log = bunyan.createLogger(config.logger.options)
-const postgres_url = process.env.DATABASE_URL || 'postgres://localhost:5432/sports'
+const postgresUrl = process.env.DATABASE_URL || 'postgres://localhost:5432/sports'
 
-const postgres = new PostgresClient(postgres_url, {max: 1})
+const postgres = new PostgresClient(postgresUrl, {max: 1})
 
 ;(async () => {
   try {
@@ -15,7 +15,8 @@ const postgres = new PostgresClient(postgres_url, {max: 1})
       createTeamsIndexes(postgres),
       createEvents(postgres),
       createEventsIndexes(postgres),
-      createEventLocationAndTvListingsInEvents(postgres)
+      createEventLocationAndTvListingsInEvents(postgres),
+      createIsCurrentSeasonInEvents(postgres)
     ])
 
     log.info("Successfully ran DB migrations!")
@@ -107,4 +108,9 @@ async function createEventsIndexes(postgres) {
 async function createEventLocationAndTvListingsInEvents(postgres) {
   await postgres.addColumnIfNotExists('events', 'event_location', 'varchar(255)')
   await postgres.addColumnIfNotExists('events', 'tv_listings', 'text')
+}
+
+async function createIsCurrentSeasonInEvents(postgres) {
+  await postgres.addColumnIfNotExists('events', 'is_current_season', 'boolean')
+  await postgres.query(`CREATE INDEX CONCURRENTLY IF NOT EXISTS events_is_current_season on events (is_current_season)`)
 }

@@ -1,9 +1,9 @@
 import moment from 'moment'
 import bunyan from 'bunyan'
 import PostgresClient from '../libs/PostgresClient'
-import Events from '../libs/Events'
-import Leagues from '../libs/Leagues'
-import Teams from '../libs/Teams'
+import Events from '../libs/models/Events'
+import Leagues from '../libs/models/Leagues'
+import Teams from '../libs/models/Teams'
 import config from '../config'
 const log = bunyan.createLogger(config.logger.options)
 

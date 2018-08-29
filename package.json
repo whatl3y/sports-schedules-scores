@@ -11,9 +11,11 @@
     "url": "https://github.com/whatl3y/sports-schedules-scores.git"
   },
   "scripts": {
+    "build": "gulp build",
     "dev": "nodemon --exec 'nf start'",
+    "migrate": "node tasks/migrate",
     "start": "node forever",
-    "postinstall": "gulp prep-prod",
+    "postinstall": "gulp build",
     "test": "mocha --compilers js:babel-core/register --recursive './src/**/*.spec.js'"
   },
   "devDependencies": {
@@ -21,13 +23,11 @@
     "mocha": "^3.1.1"
   },
   "dependencies": {
+    "@babel/core": "^7.0.0",
     "@slack/client": "^3.13.0",
     "async": "^2.6.0",
     "aws-sdk": "^2.107.0",
-    "babel-core": "^6.24.1",
-    "babel-loader": "^6.4.1",
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.24.1",
-    "babel-preset-es2016": "^6.24.1",
+    "babel-preset-env": "^1.6.1",
     "bluebird": "^3.5.0",
     "body-parser": "^1.12.0",
     "bunyan": "1.5.1",
@@ -37,9 +37,6 @@
     "gulp-babel": "latest",
     "gulp-concat": "^2.6.0",
     "gulp-plumber": "^1.1.0",
-    "gulp-replace": "^0.5.3",
-    "gulp-sourcemaps": "^1.7.3",
-    "gulp-uglify": "^1.2.0",
     "minimist": "^1.2.0",
     "moment": "^2.18.1",
     "newrelic": "^1.40.0",
