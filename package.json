@@ -4,7 +4,7 @@
   "description": "Sports schedules and scores.",
   "main": "forever.js",
   "engines": {
-    "node": "8.9.0"
+    "node": "8.12.0"
   },
   "repository": {
     "type": "git",
@@ -15,12 +15,12 @@
     "dev": "nodemon --exec 'nf start'",
     "migrate": "node tasks/migrate",
     "start": "node forever",
-    "postinstall": "gulp build",
+    "postinstall": "npm run build",
     "test": "mocha --compilers js:babel-core/register --recursive './src/**/*.spec.js'"
   },
   "devDependencies": {
-    "foreman": "^2.0.0",
-    "mocha": "^3.1.1"
+    "foreman": "^3.0.1",
+    "mocha": "^5.2.0"
   },
   "dependencies": {
     "@babel/core": "^7.0.0",
@@ -33,22 +33,21 @@
     "bunyan": "1.5.1",
     "express": "^4.15.2",
     "forever-monitor": "^1.7.1",
-    "gulp": "latest",
-    "gulp-babel": "latest",
-    "gulp-concat": "^2.6.0",
-    "gulp-plumber": "^1.1.0",
+    "gulp": "^4.0.0",
+    "gulp-babel": "^6.1.2",
+    "gulp-plumber": "^1.2.0",
     "minimist": "^1.2.0",
-    "moment": "^2.18.1",
-    "newrelic": "^1.40.0",
+    "moment": "^2.22.2",
+    "newrelic": "^4.8.1",
     "pg": "^6.1.5",
     "pg-query-stream": "^1.0.0",
     "pug": "^2.0.0-rc.3",
     "redis": "^2.8.0",
-    "request": "^2.81.0",
+    "request": "^2.88.0",
     "request-promise-native": "^1.0.5",
-    "socket.io": "^1.7.3",
+    "socket.io": "^2.1.1",
     "throng": "^4.0.0"
   },
-  "author": "Lance Whatley",
+  "author": "Lance Whatley <whatl3y@gmail.com> (https://www.lance.to)",
   "license": "MIT"
 }

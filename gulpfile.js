@@ -9,4 +9,4 @@ gulp.task('src', function() {
     .pipe(gulp.dest("./"))
 })
 
-gulp.task('build', [ 'src' ], function() {})
+gulp.task('build', gulp.parallel('src'))
