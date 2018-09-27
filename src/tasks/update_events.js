@@ -37,13 +37,13 @@ const api       = SportsApi()
     if (startDate && timeSpan) {
       switch (timeSpan) {
         case 'month':
-          endDate = startDate.clone().add(1, 'months')
+          endDate = startDate.clone().add(1, 'months').add(1, 'day')
           break
         case 'week':
-          endDate = startDate.clone().add(1, 'weeks')
+          endDate = startDate.clone().add(1, 'weeks').add(1, 'day')
           break
         case 'day':
-          endDate = startDate.clone().add(1, 'days')
+          endDate = startDate.clone().add(1, 'days').add(1, 'day')
           break
       }
     }
