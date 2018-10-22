@@ -34,7 +34,7 @@ export default {
   },
 
   sports_api: {
-    host: process.env.API_HOST || 'http://api.thescore.com/'
+    host: process.env.API_HOST || 'https://api.thescore.com/'
   },
 
   slack: {
