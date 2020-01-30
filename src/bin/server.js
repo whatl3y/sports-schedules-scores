@@ -2,11 +2,7 @@
  * to listen for HTTP requests
  */
 
-// import newrelic from 'newrelic'
 import http from 'http'
-import https from 'https'
-import os from 'os'
-import url from 'url'
 import fs from 'fs'
 import express from 'express'
 import throng from 'throng'
@@ -14,12 +10,10 @@ import bodyParser from 'body-parser'
 import path from 'path'
 import bunyan from 'bunyan'
 import Routes from '../libs/Routes'
-import PostgresClient from '../libs/PostgresClient'
 import config from '../config'
 
 const app         = express()
 const httpServer  = http.Server(app)
-const pgClient    = new PostgresClient()
 const log         = bunyan.createLogger(config.logger.options)
 
 // entry point to enrichment apps
@@ -37,19 +31,19 @@ async function startApp() {
     const routes = await Routes.get()
 
     //view engine setup
-    app.set('views', path.join(__dirname, '..', 'views'))
+    app.set('views', path.join(__dirname, '..', '..', 'views'))
     app.set('view engine', 'pug')
 
     app.use(bodyParser.urlencoded({extended: true, limit: '1mb'}))
     app.use(bodyParser.json({limit: '1mb'}))
 
     //static files
-    app.use('/public', express.static(path.join(__dirname, '..', '/public')))
+    app.use('/public', express.static(path.join(__dirname, '..', '..', '/public')))
 
     // initialize routes object to be used to bind express routes
-    const aRoutes = fs.readdirSync('routes').filter(file => fs.lstatSync(path.join('routes', file)).isFile())
+    const aRoutes = fs.readdirSync(Routes._path).filter(file => fs.lstatSync(path.join(Routes._path, file)).isFile())
     let oRoutes = {}
-    aRoutes.forEach(r => oRoutes[r] = require(path.join('..', 'routes', r)))
+    aRoutes.forEach(r => oRoutes[r] = require(path.join(Routes._path, r)))
 
     //setup route handlers in the express app
     routes.forEach(route => {

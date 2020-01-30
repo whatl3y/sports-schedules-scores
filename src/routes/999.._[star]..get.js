@@ -1,5 +1,4 @@
 import bunyan from 'bunyan'
-import GeoIp from '../libs/GeoIp'
 import Slack from '../libs/Slack'
 import RedisHelper from '../libs/RedisHelper'
 import config from '../config'
@@ -18,8 +17,8 @@ export default async function Index(req, res) {
     if (currentCache) {
       await redisClient.set(redisCacheKey, 'true', { ttl: 60 * 10 })
     } else {
-      const location = await GeoIp.location(realClientIpAddress)
-      await Slack.send(`Someone visited the main page -- IP: ${realClientIpAddress} (location: ${location.city}, ${location.region_code}, ${location.country_name}), hostname: ${req.hostname}, User-Agent: ${req.headers['user-agent']}`)
+      const location = {}
+      await Slack().send(`Someone visited the main page -- IP: ${realClientIpAddress} (location: ${location.city}, ${location.region_code}, ${location.country_name}), hostname: ${req.hostname}, User-Agent: ${req.headers['user-agent']}`)
       await redisClient.set(redisCacheKey, 'true', { ttl: 60 * 10 })
     }
   } catch(err) {

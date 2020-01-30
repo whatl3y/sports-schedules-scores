@@ -4,7 +4,7 @@
   "description": "Sports schedules and scores.",
   "main": "forever.js",
   "engines": {
-    "node": "8.12.0"
+    "node": "12.14.0"
   },
   "repository": {
     "type": "git",
@@ -13,39 +13,41 @@
   "scripts": {
     "build": "gulp build",
     "dev": "nodemon --exec 'nf start'",
-    "migrate": "node tasks/migrate",
+    "migrate": "node dist/tasks/migrate",
     "start": "node forever",
     "postinstall": "npm run build",
-    "test": "mocha --compilers js:babel-core/register --recursive './src/**/*.spec.js'"
+    "test": "mocha --exit --require @babel/register --recursive './src/**/*.spec.js'"
   },
   "devDependencies": {
+    "@babel/register": "^7.8.3",
     "foreman": "^3.0.1",
-    "mocha": "^5.2.0"
+    "mocha": "^7.0.1",
+    "nodemon": "^2.0.2"
   },
   "dependencies": {
-    "@babel/core": "^7.0.0",
-    "@slack/client": "^3.13.0",
-    "async": "^2.6.0",
-    "aws-sdk": "^2.107.0",
-    "babel-preset-env": "^1.6.1",
-    "bluebird": "^3.5.0",
+    "@babel/core": "^7.8.4",
+    "@babel/preset-env": "^7.8.4",
+    "@slack/client": "^5.0.2",
+    "async": "^3.1.1",
+    "aws-sdk": "^2.610.0",
+    "bluebird": "^3.7.2",
     "body-parser": "^1.12.0",
-    "bunyan": "1.5.1",
-    "express": "^4.15.2",
+    "bunyan": "^1.8.12",
+    "core-js": "^3.6.4",
+    "express": "^4.17.1",
     "forever-monitor": "^1.7.1",
-    "gulp": "^4.0.0",
-    "gulp-babel": "^6.1.2",
-    "gulp-plumber": "^1.2.0",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-plumber": "^1.2.1",
     "minimist": "^1.2.0",
-    "moment": "^2.22.2",
-    "newrelic": "^4.8.1",
-    "pg": "^6.1.5",
-    "pg-query-stream": "^1.0.0",
-    "pug": "^2.0.0-rc.3",
+    "moment": "^2.24.0",
+    "pg": "^7.18.1",
+    "pg-query-stream": "^3.0.2",
+    "pug": "^2.0.4",
     "redis": "^2.8.0",
     "request": "^2.88.0",
-    "request-promise-native": "^1.0.5",
-    "socket.io": "^2.1.1",
+    "request-promise-native": "^1.0.8",
+    "socket.io": "^2.3.0",
     "throng": "^4.0.0"
   },
   "author": "Lance Whatley <whatl3y@gmail.com> (https://www.lance.to)",

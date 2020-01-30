@@ -6,7 +6,7 @@ import async_map from 'async/map'
 const NOOP = () => {}
 
 export default {
-  _path: 'routes',
+  _path: path.join(__dirname, '..', 'routes'),
 
   get(callback=NOOP) {
     return new Promise((resolve, reject) => {

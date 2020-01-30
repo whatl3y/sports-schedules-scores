@@ -4,11 +4,6 @@
 *.DS_Store
 /certs
 /logs
-/files
 /node_modules
-/libs
-/bin
-/routes
-/tasks
-/config.js
+/dist
 *.env

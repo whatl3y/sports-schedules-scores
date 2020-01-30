@@ -81,9 +81,9 @@ const api       = SportsApi()
 
             // Check teams for game and whether they exist in the database,
             // insert them if not, otherwise move on to the event data
-            const homeTeam      = game.home_team
+            const homeTeam      = game.home_team || {}
             const homeStandings = (game.standings) ? game.standings.home : {}
-            const awayTeam      = game.away_team
+            const awayTeam      = game.away_team || {}
             const awayStandings = (game.standings) ? game.standings.away : {}
             const currScores    = game.box_score
             const top25Rankings = game.top_25_rankings

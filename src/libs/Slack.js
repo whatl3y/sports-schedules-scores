@@ -1,19 +1,18 @@
-import { IncomingWebhook } from '@slack/client'
+import { IncomingWebhook } from '@slack/webhook'
 import config from '../config'
 
-export default {
-  webhook: (!!config.slack.webhookUrl) ? new IncomingWebhook(config.slack.webhookUrl) : null,
+export default function Slack(webhookUrl=config.slack.webhookUrl) {
+  return {
+    webhook: (!!webhookUrl) ? new IncomingWebhook(webhookUrl) : null,
 
-  send(content) {
-    return new Promise((resolve, reject) => {
+    setUrl(newUrl) {
+      return this.webhook = new IncomingWebhook(newUrl)
+    },
+
+    async send(text) {
       if (!this.webhook)
-        return resolve(false)
-
-      this.webhook.send(content, (err, header, statusCode, body) => {
-        if (err) return reject(err)
-        if (statusCode >= 400) return reject(body)
-        resolve(body)
-      })
-    })
+        return
+      return await this.webhook.send({ text })
+    }
   }
 }

@@ -19,7 +19,7 @@ export default function CfbApi(host=config.sports_api.host) {
       return false
     },
 
-    async getEventIdsFromSchedule(league, { startDate, endDate } = { startDate:null, endDate:null }) {
+    async getEventIdsFromSchedule(league, { startDate, endDate }={}) {
       const response = await this.getLeagueSchedule(league)
       if (response) {
         return this.parseEventIdsFromScheduleResponse(response, { startDate, endDate })
@@ -46,7 +46,7 @@ export default function CfbApi(host=config.sports_api.host) {
       return this.leagues.indexOf(league) > -1
     },
 
-    parseEventIdsFromScheduleResponse(response, { startDate, endDate } = { startDate:null, endDate:null }) {
+    parseEventIdsFromScheduleResponse(response, { startDate, endDate }={}) {
       response = (typeof response === 'string') ? JSON.parse(response) : response
       const nestedEventIds = response.current_season.map(dateData => {
         if (startDate && moment(moment(dateData['start_date']).format('YYYY-MM-DD')).isBefore(startDate))

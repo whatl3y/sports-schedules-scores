@@ -11,11 +11,6 @@ export default {
     WEB_CONCURRENCY:  parseInt(process.env.WEB_CONCURRENCY || 1)
   },
 
-  newrelic: {
-    key:    process.env.NEWRELIC_KEY,
-    level:  process.env.NEWRELIC_LEVEL || 'info'
-  },
-
   redis: {
     url: process.env.REDIS_URL || 'redis://localhost:6379'
   },
