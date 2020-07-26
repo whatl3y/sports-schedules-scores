@@ -7,19 +7,15 @@
 </template>
 
 <script>
-  import moment from 'moment'
-  import Schedule from './Schedule'
-  import TimeHelpers from '../factories/TimeHelpers'
-  import Snackbar from '../factories/Snackbar'
-  import ApiData from '../factories/ApiData'
-
   export default {
-    props: [ 'leagues', 'selected' ],
+    props: ['leagues', 'selected'],
 
     methods: {
       isLeagueActiveClass(leagueName) {
-        return (leagueName.toLowerCase() == (this.selected || '').toLowerCase()) ? { fontWeight: 'bold' } : {}
-      }
-    }
+        return leagueName.toLowerCase() == (this.selected || '').toLowerCase()
+          ? { fontWeight: 'bold' }
+          : {}
+      },
+    },
   }
 </script>

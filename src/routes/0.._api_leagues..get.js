@@ -12,8 +12,7 @@ export default async function ApiLeagues(req, res) {
   try {
     const allLeagues = await leagues.getAll()
     res.json({ leagues: allLeagues })
-
-  } catch(err) {
+  } catch (err) {
     log.error(err)
     res.status(500).send('Error getting events.')
   }

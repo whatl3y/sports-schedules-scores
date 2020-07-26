@@ -3,29 +3,43 @@ import { Client, Pool } from 'pg'
 import QueryStream from 'pg-query-stream'
 import config from '../config'
 
-const NOOP = ()=>{}
+const NOOP = () => {}
 
 export default class PostgresClient {
-  constructor(connectionConfig=config.postgres.connection_string, additionalConfig={}) {
-    if (typeof connectionConfig === 'string')
-      connectionConfig = this.parseConnectionString(connectionConfig)
+  constructor(
+    connStrOrConfig = config.postgres.connection_string,
+    additionalConfig = {}
+  ) {
+    if (typeof connStrOrConfig === 'string') {
+      let connConfig = { connectionString: connStrOrConfig }
 
-    this.pool = new Pool({
-      host:               connectionConfig.host,
-      user:               connectionConfig.user,
-      password:           connectionConfig.password,
-      database:           connectionConfig.database,
-      ssl:                connectionConfig.ssl,
-      max:                additionalConfig.max || 2,    // max number of clients in the pool
-      idleTimeoutMillis:  5000 // how long a client is allowed to remain idle before being closed
-    })
+      // https://github.com/brianc/node-postgres/issues/2009#issuecomment-608568254
+      if (config.server.IS_PRODUCTION)
+        connConfig.ssl = { rejectUnauthorized: false }
+
+      this.pool = new Pool({
+        max: config.postgres.maxConnections,
+        ...additionalConfig,
+        ...connConfig,
+      })
+    } else {
+      this.pool = new Pool({
+        host: connStrOrConfig.host,
+        user: connStrOrConfig.user,
+        password: connStrOrConfig.password,
+        database: connStrOrConfig.database,
+        ssl: connStrOrConfig.ssl,
+        max: additionalConfig.max || config.postgres.maxConnections, // max number of clients in the pool
+        idleTimeoutMillis: 5000, // how long a client is allowed to remain idle before being closed
+      })
+    }
 
     this.logger = additionalConfig.logger || {
-      fatal:    console.log,
+      fatal: console.log,
       critical: console.log,
-      error:    console.log,
-      info:     console.log,
-      debug:    console.log
+      error: console.log,
+      info: NOOP,
+      debug: NOOP,
     }
 
     this.bindPoolErrorEvent()
@@ -61,7 +75,6 @@ export default class PostgresClient {
 
       callback(null, queryResults)
       return queryResults
-
     } catch (err) {
       callback(err)
       throw err
@@ -137,7 +150,9 @@ export default class PostgresClient {
   }
 
   async updateConstraintWithoutException(updateConstraintSql) {
-    updateConstraintSql = updateConstraintSql.replace(/\n|\r\n/g, '').replace(';', '')
+    updateConstraintSql = updateConstraintSql
+      .replace(/\n|\r\n/g, '')
+      .replace(';', '')
     await this.query(`
       DO $$
           BEGIN
@@ -154,16 +169,16 @@ export default class PostgresClient {
     `)
   }
 
-  parseConnectionString(string, ssl=true) {
+  parseConnectionString(string, ssl = true) {
     const parsedUrl = url.parse(string)
     let config = {
       host: parsedUrl.hostname,
-      database: parsedUrl.path.substring(1)
+      database: parsedUrl.path.substring(1),
     }
 
     // If the connection requires auth per the URL, parse and add it
     // to the config
-    const authInfo = (parsedUrl.auth) ? parsedUrl.auth.split(':') : null
+    const authInfo = parsedUrl.auth ? parsedUrl.auth.split(':') : null
     if (authInfo) {
       config.user = authInfo[0]
       config.password = authInfo[1]

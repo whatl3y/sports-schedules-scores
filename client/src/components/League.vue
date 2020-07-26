@@ -26,11 +26,10 @@
   import moment from 'moment'
   import Schedule from './Schedule'
   import TimeHelpers from '../factories/TimeHelpers'
-  import Snackbar from '../factories/Snackbar'
   import ApiData from '../factories/ApiData'
 
   export default {
-    props: [ 'league' ],
+    props: ['league'],
 
     data() {
       return {
@@ -41,7 +40,7 @@
         selectedLeagueName: this.league,
         leagues: [],
         teams: [],
-        events: []
+        events: [],
       }
     },
 
@@ -52,39 +51,47 @@
         let filteredTeams = this.teams.slice(0)
 
         if (this.selectFilter == 'top25') {
-          filteredTeams = filteredTeams.filter(t => !!t.current_ranking)
+          filteredTeams = filteredTeams.filter((t) => !!t.current_ranking)
         } else if (this.selectFilter != 'all') {
           if (this.selectFilter == 'today') {
-            filteredTeams = filteredTeams.filter(t => !!t.event_time_today)
-            if (filteredTeams.length === 0) {
-              this.selectFilter = 'all'
-              filteredTeams = this.teams.slice(0)
-            }
+            filteredTeams = filteredTeams.filter((t) => !!t.event_time_today)
+            // if (filteredTeams.length === 0) {
+            //   this.selectFilter = 'all'
+            // }
           } else {
-            filteredTeams = filteredTeams.filter(t => this.selectFilter == t.conference_abbreviation)
+            filteredTeams = filteredTeams.filter(
+              (t) => this.selectFilter == t.conference_abbreviation
+            )
           }
         }
 
-        if (this.searchFilter)
-          return filteredTeams.filter(t => t.full_name.toLowerCase().indexOf(this.searchFilter.toLowerCase()) > -1)
+        if (this.searchFilter) {
+          return filteredTeams.filter(
+            (t) =>
+              t.full_name
+                .toLowerCase()
+                .indexOf(this.searchFilter.toLowerCase()) > -1
+          )
+        }
         return filteredTeams
-      }
+      },
     },
 
     methods: {
-      getFormattedDate(datetime, format='YYYY-MM-DD h:mm a') {
+      getFormattedDate(datetime, format = 'YYYY-MM-DD h:mm a') {
         return TimeHelpers.getFormattedDate(datetime, format)
       },
 
       isLeagueActiveClass(leagueName) {
-        return (leagueName.toLowerCase() == this.selectedLeagueName.toLowerCase()) ? { fontWeight: 'bold' } : {}
+        return leagueName.toLowerCase() == this.selectedLeagueName.toLowerCase()
+          ? { fontWeight: 'bold' }
+          : {}
       },
 
-      getTeamColorStyle(team, justColor=false) {
-        if (justColor)
-          return `#${team.team_color1}`
+      getTeamColorStyle(team, justColor = false) {
+        if (justColor) return `#${team.team_color1}`
         return { color: `#${team.team_color1}` }
-      }
+      },
     },
 
     async created() {
@@ -93,24 +100,33 @@
       const info = await ApiData.getAll(this.selectedLeagueName)
       this.events = info.events
       this.teams = info.teams.sort((t1, t2) => {
-        if (t1.location.toLowerCase() < t2.location.toLowerCase())
-          return -1
+        if (t1.location.toLowerCase() < t2.location.toLowerCase()) return -1
         return 1
       })
-      this.conferences = (info.conferences || []).filter(c => !!c)
+      this.conferences = (info.conferences || []).filter((c) => !!c)
 
-      let defaultFilterOptions = [{ text: `All Teams`, value: 'all' }, { text: `All Teams with Games Today`, value: 'today' }]
+      let defaultFilterOptions = [
+        { text: `All Teams`, value: 'all' },
+        { text: `All Teams with Games Today`, value: 'today' },
+      ]
       if (this.selectedLeagueName == 'ncaaf')
         defaultFilterOptions.push({ text: `Top 25`, value: 'top25' })
-      this.selectFilterOptions = defaultFilterOptions.concat(this.conferences.map(c => ({ text: `${c} (conference)`, value: c })))
+      this.selectFilterOptions = defaultFilterOptions.concat(
+        this.conferences.map((c) => ({ text: `${c} (conference)`, value: c }))
+      )
 
-      this.selectFilter = (this.conferences.length > 3) ? this.conferences[ Math.floor(Math.random() * this.conferences.length) ] : 'all'
+      this.selectFilter =
+        this.conferences.length > 3
+          ? this.conferences[
+              Math.floor(Math.random() * this.conferences.length)
+            ]
+          : 'all'
       this.isLoading = false
     },
 
     components: {
-      Schedule
-    }
+      Schedule,
+    },
   }
 </script>
 

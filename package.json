@@ -4,7 +4,7 @@
   "description": "Sports schedules and scores.",
   "main": "forever.js",
   "engines": {
-    "node": "12.14.0"
+    "node": "14.5.0"
   },
   "repository": {
     "type": "git",
@@ -19,14 +19,14 @@
     "test": "mocha --exit --require @babel/register --recursive './src/**/*.spec.js'"
   },
   "devDependencies": {
-    "@babel/register": "^7.8.3",
+    "@babel/register": "^7.10.5",
     "foreman": "^3.0.1",
-    "mocha": "^7.0.1",
-    "nodemon": "^2.0.2"
+    "mocha": "^8.0.1",
+    "nodemon": "^2.0.4"
   },
   "dependencies": {
-    "@babel/core": "^7.8.4",
-    "@babel/preset-env": "^7.8.4",
+    "@babel/core": "^7.10.5",
+    "@babel/preset-env": "^7.10.4",
     "@google-cloud/bigquery": "^4.7.0",
     "@slack/client": "^5.0.2",
     "async": "^3.1.1",
@@ -41,10 +41,10 @@
     "gulp": "^4.0.2",
     "gulp-babel": "^8.0.0",
     "gulp-plumber": "^1.2.1",
-    "minimist": "^1.2.0",
-    "moment": "^2.24.0",
-    "pg": "^7.18.1",
-    "pg-query-stream": "^3.0.2",
+    "minimist": "^1.2.5",
+    "moment": "^2.27.0",
+    "pg": "^8.3.0",
+    "pg-query-stream": "^3.2.0",
     "pug": "^2.0.4",
     "redis": "^2.8.0",
     "request": "^2.88.0",
