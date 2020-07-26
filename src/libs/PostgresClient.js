@@ -136,6 +136,24 @@ export default class PostgresClient {
     `)
   }
 
+  async updateConstraintWithoutException(updateConstraintSql) {
+    updateConstraintSql = updateConstraintSql.replace(/\n|\r\n/g, '').replace(';', '')
+    await this.query(`
+      DO $$
+          BEGIN
+              BEGIN
+                  ${updateConstraintSql};
+              EXCEPTION
+                  WHEN duplicate_object THEN RAISE NOTICE 'constraint already exists: ${updateConstraintSql}';
+                  WHEN duplicate_table THEN RAISE NOTICE 'constraint already exists: ${updateConstraintSql}';
+                  WHEN undefined_object THEN RAISE NOTICE 'constraint does not exist: ${updateConstraintSql}';
+                  WHEN undefined_table THEN RAISE NOTICE 'constraint does not exist: ${updateConstraintSql}';
+              END;
+          END;
+      $$
+    `)
+  }
+
   parseConnectionString(string, ssl=true) {
     const parsedUrl = url.parse(string)
     let config = {
