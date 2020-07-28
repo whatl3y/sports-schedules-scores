@@ -1,4 +1,5 @@
 version: '3'
+name: 'sports'
 services:
   redis-server:
     image: 'redis'
