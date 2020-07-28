@@ -1,16 +1,16 @@
 <template lang="pug">
   b-table(:striped="true",:hover="true",responsive="md",:fields="scheduleFields",:items="scheduleData")
-    template(slot="visiting_team",slot-scope="data")
+    template(v-slot:cell(visiting_team)="data")
       a(:href="'/team/' + league + '/' + data.value.uid")
         div.d-flex.d-row.align-items-center
           img.inline-img(:src="'/file/s3/' + data.value.logo")
           div {{ data.value.name }}
-    template(slot="home_team",slot-scope="data")
+    template(v-slot:cell(home_team)="data")
       a(:href="'/team/' + league + '/' + data.value.uid")
         div.d-flex.d-row.align-items-center
           img.inline-img(:src="'/file/s3/' + data.value.logo")
           div {{ data.value.name }}
-    template(slot="result",slot-scope="data")
+    template(v-slot:cell(result)="data")
       div(:style="(data.value.indexOf('W') == 0) ? { color: 'green' } : ((data.value.indexOf('L') == 0) ? { color: 'red' } : {})") {{ data.value }}
 </template>
 
