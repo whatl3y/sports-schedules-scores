@@ -1,0 +1,25 @@
+mixin schedule(team, league, data)
+  div.card(style=`border-color: ${data.getTeamColorStyle(team, true)}`)
+    div.card-text.team
+      div.d-flex.flex-column.align-items-center.justify-content-center
+        div.text-center(style="font-size:9px;")
+          strong
+            div
+              a(
+                style="color: inherit; text-decoration: underline"
+                href=`/team/${league}/${team.api_uid}`)= `${team.current_ranking ? '(' + team.current_ranking + ')' : ''} ${team.full_name}` 
+        if team.logo_local_filename
+          img.img-fluid(src=`${data.awsS3BaseUrl}/${team.logo_local_filename}`)
+        div.schedule.d-flex
+          ul.list-unstyled
+            each event in data.teamSpecificEvents(data.events, team.full_name)
+              li(style=data.getResultOrStyle(event, team, 'style'))
+                div.d-flex.flex-row.justify-content-center
+                  div
+                    i #{data.getFormattedDate(event.event_timestamp)}&nbsp;
+                  div.d-flex.flex-row.justify-content-center
+                    div #{data.getAtOrVs(event, team)}&nbsp;
+                    div #{data.getOtherTeam(event, team)}&nbsp;
+                    if !!data.getResultOrStyle(event, team)
+                      div
+                        strong= `(${data.getResultOrStyle(event, team)})`

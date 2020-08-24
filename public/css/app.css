@@ -1,0 +1,162 @@
+@import url(/public/css/bootstrap.css);
+html,
+body {
+  -webkit-text-size-adjust: none;
+  /* This is attempting to not have the text change on a mobile device */
+  min-width: 100%;
+  /*
+  background-color:#F9F9F9;
+  background-image:url("images/squairs_icon_opaque.png");
+  background-attachment: fixed;
+  background-position:center center;
+  background-repeat:no-repeat;
+  */ }
+
+.league-nav {
+  background: #f0f0f0;
+  border-bottom: 1px solid;
+  font-size: 12px;
+  padding: 5px;
+  margin-bottom: 5px;
+  text-align: center; }
+
+.row .no-gutters {
+  margin-left: 0px;
+  margin-right: 0px; }
+  .row .no-gutters [class^='col-'],
+  .row .no-gutters [class*='col-'] {
+    padding-left: 0px;
+    padding-right: 0px; }
+
+.row .small-gutters {
+  margin-left: -5px;
+  margin-right: -5px; }
+  .row .small-gutters [class^='col-'],
+  .row .small-gutters [class*='col-'] {
+    padding-left: 5px;
+    padding-right: 5px; }
+
+.inline-img {
+  max-width: 40px;
+  max-height: 40px;
+  margin: 0px 5px; }
+
+.table td {
+  vertical-align: middle; }
+
+ul.tiny {
+  padding-left: 3px; }
+
+ul.small {
+  padding-left: 5px; }
+
+.click {
+  cursor: pointer; }
+
+.title {
+  font-size: 3.5rem; }
+
+.selected-bg {
+  background: #5bc0b7;
+  color: white; }
+
+.light-bg {
+  background: #f5f5f5; }
+
+.soft {
+  color: #c6d5f3; }
+
+.padding-tiny {
+  padding: 3px; }
+
+.padding-small {
+  padding: 5px; }
+
+.padding-medium {
+  padding: 15px; }
+
+.padding-large {
+  padding: 30px; }
+
+.margin-small {
+  margin: 5px; }
+
+.margin-medium {
+  margin: 15px; }
+
+.margin-large {
+  margin: 30px; }
+
+.margin-left-small {
+  margin-left: 5px; }
+
+.margin-right-small {
+  margin-right: 5px; }
+
+.margin-bottom-small {
+  margin-bottom: 5px; }
+
+.margin-bottom-medium {
+  margin-bottom: 15px; }
+
+.margin-bottom-large {
+  margin-bottom: 30px; }
+
+.margin-top-small {
+  margin-top: 5px; }
+
+.margin-top-medium {
+  margin-top: 15px; }
+
+.margin-top-large {
+  margin-top: 30px; }
+
+.margin-top-xlarge {
+  margin-top: 50px; }
+
+.separate-vert-small {
+  margin-top: 5px;
+  margin-bottom: 5px; }
+
+.separate-vert-medium {
+  margin-top: 10px;
+  margin-bottom: 10px; }
+
+.separate-vert-large {
+  margin-top: 30px;
+  margin-bottom: 30px; }
+
+.text-large {
+  font-size: 1.5em; }
+
+.text-xlarge {
+  font-size: 1.75em; }
+
+.text-xxlarge {
+  font-size: 3em; }
+
+.text-xxxlarge {
+  font-size: 5em; }
+
+.text-small {
+  font-size: 0.8em; }
+
+.text-tiny {
+  font-size: 0.5em; }
+
+.league-main .event {
+  padding: 2px 2px 0px 2px; }
+
+.league-main .team {
+  padding: 3px; }
+
+.league-main .schedule {
+  min-height: 120px; }
+  .league-main .schedule ul {
+    margin-bottom: 2px; }
+    .league-main .schedule ul li {
+      /*border-bottom: 1px solid #f0f0f0;*/
+      font-size: 8px; }
+
+.league-main img {
+  max-height: 30px; }

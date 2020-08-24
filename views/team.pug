@@ -1,0 +1,28 @@
+extends layout.pug
+
+include includes/scheduleLarge.pug
+
+block main
+  - var league = data.activeLeague.uri_name
+  - var events = data.events
+  - var team = data.activeTeam
+  - var teamComplete = JSON.parse(team.complete_json)
+
+  div
+    div.ml-2
+      small
+        a(href=`/league/${league}`) Back to #{league.toUpperCase()} Home
+    div.container
+      div.text-center(style= `color: #${team.team_color1}`)
+        h1.title
+          img(style="max-width:100px",src=`/file/s3/${team.logo_local_filename}`)
+          span  #{team.full_name}
+          if team.current_ranking
+            span  (#{team.current_ranking})
+
+        if teamComplete.standings.short_record
+          h5 Record: #{teamComplete.standings.short_record} (#{teamComplete.standings.streak})
+      hr
+      h1 Schedule
+      div.d-flex.justify-content-center.align-items-center
+        +scheduleLarge(league, events, team, data)

@@ -1,0 +1,26 @@
+extends layout.pug
+
+include includes/scheduleLarge.pug
+
+block main
+  - var league = data.activeLeague.uri_name
+  - var events = data.events
+
+  div
+    div.ml-2
+      small
+        a(href=`/league/${league}`) Back to #{league.toUpperCase()} Home
+    b-container
+      div.text-center
+        h1.title #{league.toUpperCase()} Schedule
+        h4 for
+        //- div.d-flex.d-column.justify-content-center
+        //-   datepicker(v-model="date",@changedWithKey="changeScheduleDate")
+      if events.length > 0
+        div.d-flex.justify-content-center.align-items-center
+          +scheduleLarge(league, events, null, data)
+      else
+        div.row
+          div.col-lg-6.offset-lg-3
+            div.alert.alert-warning
+              i There are no events that we found #{data.getTimeFromNow()}. Select another date above.

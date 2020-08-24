@@ -25,7 +25,7 @@ export default {
     access_secret: process.env.AWS_SECRET_ACCESS_KEY,
 
     s3: {
-      bucket: process.env.AWS_S3_BUCKET || 'whatl3y',
+      bucket: process.env.AWS_S3_BUCKET || 'sports.euphoritech.com',
     },
   },
 

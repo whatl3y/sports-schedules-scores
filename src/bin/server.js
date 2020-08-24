@@ -46,6 +46,10 @@ async function startApp() {
     let oRoutes = {}
     aRoutes.forEach((r) => (oRoutes[r] = require(path.join(Routes._path, r))))
 
+    //view engine setup
+    app.set('views', path.join(__dirname, '..', '..', 'views'))
+    app.set('view engine', 'pug')
+
     //setup route handlers in the express app
     routes.forEach((route) => {
       try {
