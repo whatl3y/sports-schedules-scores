@@ -1,3 +1,4 @@
+require('dotenv').config()
 const appName = process.env.APP_NAME || 'sports'
 
 export default {

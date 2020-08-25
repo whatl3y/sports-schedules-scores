@@ -2,6 +2,7 @@
  * to listen for HTTP requests
  */
 
+import config from '../config'
 import http from 'http'
 import fs from 'fs'
 import express from 'express'
@@ -10,7 +11,6 @@ import bodyParser from 'body-parser'
 import path from 'path'
 import bunyan from 'bunyan'
 import Routes from '../libs/Routes'
-import config from '../config'
 
 const app = express()
 const httpServer = http.Server(app)

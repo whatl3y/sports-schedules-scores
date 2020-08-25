@@ -2,26 +2,28 @@ const gulp = require('gulp')
 const babel = require('gulp-babel')
 const nodemon = require('gulp-nodemon')
 const plumber = require('gulp-plumber')
-const sass = require('gulp-sass')
+const webpack = require('webpack-stream')
+const webpackConfig = require('./webpack.config.js')
 
 gulp.task('src', function () {
   return gulp
-    .src('./src/**/*.js')
+    .src('./src/server/**/*.js')
     .pipe(plumber())
     .pipe(babel())
     .pipe(gulp.dest('./dist'))
 })
 
-gulp.task('scss', function () {
+gulp.task('app', function () {
   return gulp
-    .src('./src/scss/**/*.{css,scss}')
-    .pipe(sass().on('error', sass.logError))
-    .pipe(gulp.dest('./public/css'))
+    .src('./src/app/**/*.js')
+    .pipe(plumber())
+    .pipe(webpack(webpackConfig))
+    .pipe(gulp.dest('./public/js'))
 })
 
 gulp.task('start', function (done) {
   const stream = nodemon({
-    exec: 'npm run devServer',
+    exec: 'npm start',
     ext: 'js ts scss',
     tasks: ['build'],
     watch: ['src'],
@@ -35,4 +37,4 @@ gulp.task('start', function (done) {
   return stream
 })
 
-gulp.task('build', gulp.parallel('src', 'scss'))
+gulp.task('build', gulp.parallel('src', 'app'))

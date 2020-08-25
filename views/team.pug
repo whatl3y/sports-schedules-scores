@@ -15,7 +15,7 @@ block main
     div.container
       div.text-center(style= `color: #${team.team_color1}`)
         h1.title
-          img(style="max-width:100px",src=`/file/s3/${team.logo_local_filename}`)
+          img(style="max-width:100px",src=`${data.awsS3BaseUrl}/${team.logo_local_filename}`)
           span  #{team.full_name}
           if team.current_ranking
             span  (#{team.current_ranking})

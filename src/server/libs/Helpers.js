@@ -56,7 +56,7 @@ export function getResultOrStyle(event, heroTeam, type = 'result') {
   const visitingTeamScore = event.visiting_team_score
 
   let heroTeamScore, villainTeamScore
-  if (homeTeam == heroTeam.full_name) {
+  if (heroTeam && homeTeam == heroTeam.full_name) {
     heroTeamScore = homeTeamScore || 0
     villainTeamScore = visitingTeamScore || 0
   } else {
