@@ -18,7 +18,7 @@ export default async function LeagueSchedule(req, res) {
   const league = await leagues.findByColumn(leagueName, 'uri_name')
 
   const [allLeagues, allEvents, allTeams, allConferences] = await Promise.all([
-    leagues.getAll(),
+    leagues.getAllOrdered(),
     events.getAllByLeagueId(league.id, activeDate),
     teams.getAll(league.id),
     teams.getAllConferences(league.id),

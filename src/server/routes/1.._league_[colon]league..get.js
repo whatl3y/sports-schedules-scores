@@ -25,7 +25,7 @@ export async function getLeagueAndEventData(req, res) {
   const activeLeague = await leagues.findBy({ uri_name: leagueName })
 
   const [allLeagues, allEvents, allTeams, allConferences] = await Promise.all([
-    leagues.getAll(),
+    leagues.getAllOrdered(),
     events.getAllByLeagueId(activeLeague.id, activeDate),
     teams.getAll(activeLeague.id, searchTerm),
     teams.getAllConferences(activeLeague.id),

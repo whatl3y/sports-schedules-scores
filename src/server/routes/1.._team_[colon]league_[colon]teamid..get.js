@@ -19,7 +19,7 @@ export default async function Team(req, res) {
   const team = await teams.findBy({ league_id: league.id, api_uid: teamId })
 
   const [allLeagues, allEvents] = await Promise.all([
-    leagues.getAll(),
+    leagues.getAllOrdered(),
     events.getAllByTeamId(team.id),
   ])
   res.render('team', {
