@@ -38,6 +38,7 @@ export default function Teams(postgres) {
                 ? `and (t.name ilike '%' || $2 || '%' or t.full_name ilike '%' || $2 || '%')`
                 : ``
             }
+          order by lower(coalesce(full_name, name))
         `,
         [leagueId].concat(searchTerm ? [searchTerm] : [])
       )

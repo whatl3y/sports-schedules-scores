@@ -26,6 +26,7 @@ export default async function LeagueSchedule(req, res) {
   res.render('dailySchedule', {
     data: {
       awsS3BaseUrl: `http://${config.aws.s3.bucket}.s3-website.us-east-1.amazonaws.com`,
+      date: activeDate,
       leagues: allLeagues,
       activeLeague: league,
 
