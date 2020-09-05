@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "description": "Sports schedules and scores.",
   "main": "forever.js",
+  "author": "Lance Whatley <whatl3y@gmail.com> (https://www.lance.to)",
+  "license": "MIT",
   "engines": {
     "node": "14.5.0"
   },
@@ -12,35 +14,44 @@
   },
   "scripts": {
     "build": "gulp build",
-    "dev": "nodemon --exec 'nf start'",
+    "dev": "gulp start",
     "migrate": "node dist/tasks/migrate",
     "start": "node forever",
     "postinstall": "npm run build",
     "test": "mocha --exit --require @babel/register --recursive './src/**/*.spec.js'"
   },
   "devDependencies": {
+    "@babel/core": "^7.11.4",
+    "@babel/preset-env": "^7.11.0",
     "@babel/register": "^7.10.5",
-    "foreman": "^3.0.1",
+    "babel-loader": "^8.1.0",
+    "core-js": "^3.6.4",
+    "css-loader": "^4.2.2",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-nodemon": "^2.5.0",
+    "gulp-plumber": "^1.2.1",
     "mocha": "^8.0.1",
-    "nodemon": "^2.0.4"
+    "node-sass": "^4.14.1",
+    "sass": "^1.26.10",
+    "sass-loader": "^10.0.0",
+    "style-loader": "^1.2.1",
+    "webpack": "^4.44.1",
+    "webpack-stream": "^5.2.1"
   },
   "dependencies": {
-    "@babel/core": "^7.10.5",
-    "@babel/preset-env": "^7.10.4",
     "@google-cloud/bigquery": "^4.7.0",
     "@slack/client": "^5.0.2",
     "async": "^3.1.1",
     "aws-sdk": "^2.610.0",
     "bluebird": "^3.7.2",
     "body-parser": "^1.12.0",
+    "bootstrap": "^4.5.2",
     "brain.js": "^2.0.0-alpha.12",
     "bunyan": "^1.8.12",
-    "core-js": "^3.6.4",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "forever-monitor": "^1.7.1",
-    "gulp": "^4.0.2",
-    "gulp-babel": "^8.0.0",
-    "gulp-plumber": "^1.2.1",
     "minimist": "^1.2.5",
     "moment": "^2.27.0",
     "pg": "^8.3.0",
@@ -51,7 +62,5 @@
     "request-promise-native": "^1.0.8",
     "socket.io": "^2.3.0",
     "throng": "^4.0.0"
-  },
-  "author": "Lance Whatley <whatl3y@gmail.com> (https://www.lance.to)",
-  "license": "MIT"
+  }
 }

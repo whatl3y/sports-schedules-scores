@@ -1,0 +1,32 @@
+mixin scheduleLarge(league, events, team, data)
+  div.table-responsive
+    table.table.table-striped.table-bordered
+      thead
+        tr
+          th Date
+          th Event Location
+          th Visiting Team
+          th Home Team
+          th Spread
+          th Over/Under
+          th Result
+          th TV Listing
+      tbody
+        each ev in events
+          tr
+            td= data.getFormattedDate(ev.event_timestamp)
+            td= ev.event_location || 'N/A'
+            td
+              a(href=`/team/${league}/${ev.visiting_api_uid}`)
+                div.d-flex.d-row.align-items-center
+                  img.inline-img(src=`${data.awsS3BaseUrl}/${ev.visiting_local_filename}`)
+                  div #{ev.visiting_full_name}
+            td
+              a(href=`/team/${league}/${ev.home_api_uid}`)
+                div.d-flex.d-row.align-items-center
+                  img.inline-img(src=`${data.awsS3BaseUrl}/${ev.home_local_filename}`)
+                  div #{ev.home_full_name}
+            td= ev.odds_spread
+            td= ev.odds_over_under
+            td= data.getResultOrStyle(ev, team)
+            td= ev.tvListings && ev.tvListings.us ? ev.tvListings.us.map((n) => n.short_name).join(', ') : 'N/A'

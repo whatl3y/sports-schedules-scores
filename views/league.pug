@@ -1,0 +1,32 @@
+extends layout.pug
+
+include includes/schedule.pug
+
+block main
+  - var getFormattedDate = data.getFormattedDate
+  - var selectedLeagueName = data.activeLeague.uri_name
+
+  div.container-fluid
+    h1 #{selectedLeagueName.toUpperCase()} Schedules and Scores
+    div.row
+      div.col-12.margin-bottom-medium.text-right
+        small
+          a(href=`/league/${selectedLeagueName}/schedule/${getFormattedDate(new Date(), 'YYYYMMDD')}`)
+            b-button.btn-sm(variant="primary") #{selectedLeagueName.toUpperCase()} Daily Schedule
+      div.col-12.col-md-8.offset-md-2.col-lg-6.offset-lg-3
+        div.row
+          //- div.col-sm-12.col-md-6.margin-bottom-small
+          //-   b-form-select(v-model="selectFilter",:options="selectFilterOptions")
+          div.col-sm-12.col
+            //- b-form-input(v-model="searchFilter",placeholder="Search for a team...")
+            input#team-search.form-control(placeholder="Search for a team...")
+    hr(style="margin:20px 0px;")
+    div.league-main.d-flex.flex-row.justify-content-center.flex-wrap
+      if data.teams.length > 0
+        each team, index in data.teams
+          div.event(style=data.getTeamColorStyle(team),id=`event${index}`)
+            +schedule(team, selectedLeagueName, data)
+      else
+        div.mt-4.alert.alert-danger
+          | We didn't find any teams! #[a(href=`/league/${selectedLeagueName}`) Click here]
+          | to go back to all teams.
