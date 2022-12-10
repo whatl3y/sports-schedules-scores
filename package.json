@@ -36,7 +36,7 @@
     "brain.js": "^2.0.0-alpha.12",
     "bunyan": "^1.8.12",
     "core-js": "^3.6.4",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "forever-monitor": "^1.7.1",
     "gulp": "^4.0.2",
     "gulp-babel": "^8.0.0",
